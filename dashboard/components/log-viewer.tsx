@@ -50,51 +50,124 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
   }
 
   const renderMarkdown = (text: string) => {
-    // Simple markdown-like formatting
+    // Enhanced markdown rendering with proper code block support
     if (!text || typeof text !== 'string') return null
 
-    return text
-      .split('\n')
-      .map((line, i) => {
-        // Headers
-        if (line.startsWith('# ')) {
-          return <h1 key={i} className="text-lg font-bold mb-2 mt-4">{line.slice(2)}</h1>
-        }
-        if (line.startsWith('## ')) {
-          return <h2 key={i} className="text-base font-bold mb-2 mt-3">{line.slice(3)}</h2>
-        }
-        if (line.startsWith('### ')) {
-          return <h3 key={i} className="text-sm font-bold mb-1 mt-2">{line.slice(4)}</h3>
-        }
+    const lines = text.split('\n')
+    const elements: React.ReactNode[] = []
+    let inCodeBlock = false
+    let codeBlockContent: string[] = []
+    let codeBlockLanguage = ''
 
-        // Lists
-        if (line.match(/^[\s]*[-*]\s/)) {
-          return <li key={i} className="ml-4 list-disc">{line.replace(/^[\s]*[-*]\s/, '')}</li>
-        }
-        if (line.match(/^[\s]*\d+\.\s/)) {
-          return <li key={i} className="ml-4 list-decimal">{line.replace(/^[\s]*\d+\.\s/, '')}</li>
-        }
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
 
-        // Code blocks
-        if (line.startsWith('```')) {
-          return null // Skip code fence markers
+      // Handle code block start/end
+      if (line.startsWith('```')) {
+        if (!inCodeBlock) {
+          // Start code block
+          inCodeBlock = true
+          codeBlockLanguage = line.slice(3).trim()
+          codeBlockContent = []
+        } else {
+          // End code block
+          inCodeBlock = false
+          elements.push(
+            <div key={i} className="my-4">
+              {codeBlockLanguage && (
+                <div className="bg-slate-100 px-3 py-1 text-xs text-slate-600 font-mono border border-slate-200 rounded-t-md">
+                  {codeBlockLanguage}
+                </div>
+              )}
+              <pre className={`bg-slate-50 border border-slate-200 p-4 overflow-x-auto font-mono text-xs leading-relaxed ${codeBlockLanguage ? 'rounded-b-md' : 'rounded-md'}`}>
+                <code className="text-slate-800">{codeBlockContent.join('\n')}</code>
+              </pre>
+            </div>
+          )
+          codeBlockContent = []
+          codeBlockLanguage = ''
         }
-        if (line.startsWith('    ') || line.startsWith('\t')) {
-          return <code key={i} className="block bg-slate-800 px-2 py-1 rounded font-mono text-xs mb-1">{line}</code>
-        }
+        continue
+      }
 
-        // Inline formatting
-        let formatted = line
+      // Inside code block
+      if (inCodeBlock) {
+        codeBlockContent.push(line)
+        continue
+      }
+
+      // Headers
+      if (line.startsWith('# ')) {
+        elements.push(<h1 key={i} className="text-2xl font-bold mb-3 mt-6 text-slate-900">{line.slice(2)}</h1>)
+        continue
+      }
+      if (line.startsWith('## ')) {
+        elements.push(<h2 key={i} className="text-xl font-bold mb-2 mt-5 text-slate-800">{line.slice(3)}</h2>)
+        continue
+      }
+      if (line.startsWith('### ')) {
+        elements.push(<h3 key={i} className="text-lg font-semibold mb-2 mt-4 text-slate-700">{line.slice(4)}</h3>)
+        continue
+      }
+      if (line.startsWith('#### ')) {
+        elements.push(<h4 key={i} className="text-base font-semibold mb-1 mt-3 text-slate-700">{line.slice(5)}</h4>)
+        continue
+      }
+
+      // Horizontal rule
+      if (line.trim() === '---') {
+        elements.push(<hr key={i} className="my-6 border-slate-200" />)
+        continue
+      }
+
+      // Lists
+      if (line.match(/^[\s]*[-*]\s/)) {
+        const content = line.replace(/^[\s]*[-*]\s/, '')
+        const formatted = content
           .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-          .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
-          .replace(/`(.+?)`/g, '<code class="bg-slate-800 px-1 rounded font-mono text-xs">$1</code>')
+          .replace(/`(.+?)`/g, '<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700">$1</code>')
+        elements.push(<li key={i} className="ml-6 mb-1 list-disc text-slate-700" dangerouslySetInnerHTML={{ __html: formatted }} />)
+        continue
+      }
+      if (line.match(/^[\s]*\d+\.\s/)) {
+        const content = line.replace(/^[\s]*\d+\.\s/, '')
+        const formatted = content
+          .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+          .replace(/`(.+?)`/g, '<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700">$1</code>')
+        elements.push(<li key={i} className="ml-6 mb-1 list-decimal text-slate-700" dangerouslySetInnerHTML={{ __html: formatted }} />)
+        continue
+      }
 
-        if (line.trim() === '') {
-          return <br key={i} />
-        }
+      // Checkboxes
+      if (line.match(/^[\s]*-\s\[\s?\]/)) {
+        const checked = line.includes('[x]') || line.includes('[X]')
+        const content = line.replace(/^[\s]*-\s\[.\]\s/, '')
+        elements.push(
+          <div key={i} className="flex items-start gap-2 ml-6 mb-1">
+            <input type="checkbox" checked={checked} readOnly className="mt-1" />
+            <span className="text-slate-700">{content}</span>
+          </div>
+        )
+        continue
+      }
 
-        return <p key={i} className="mb-1" dangerouslySetInnerHTML={{ __html: formatted }} />
-      })
+      // Inline formatting
+      let formatted = line
+        .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
+        .replace(/`(.+?)`/g, '<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700">$1</code>')
+
+      // Empty lines
+      if (line.trim() === '') {
+        elements.push(<div key={i} className="h-2" />)
+        continue
+      }
+
+      // Regular paragraph
+      elements.push(<p key={i} className="mb-2 text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />)
+    }
+
+    return <div className="space-y-1">{elements}</div>
   }
 
   const parseConversationView = () => {
