@@ -5,7 +5,6 @@ import { Task, TasksFile, Repository } from '@/lib/schemas'
 import { KanbanBoard } from '@/components/kanban-board'
 import { LogViewer } from '@/components/log-viewer'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 export default function Dashboard() {
@@ -64,7 +63,10 @@ export default function Dashboard() {
               </div>
               <Skeleton className="h-5 w-96" />
             </div>
-            <Skeleton className="h-32 w-64 rounded-xl" />
+            <div className="flex gap-2">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-6 w-40" />
+            </div>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -100,25 +102,13 @@ export default function Dashboard() {
           </div>
 
           {repositories.length > 0 && (
-            <Card className="w-64">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Repositories</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {repositories.map((repo) => (
-                  <div key={repo.name} className="space-y-1">
-                    <Badge variant="secondary" className="font-mono">
-                      {repo.name}
-                    </Badge>
-                    {repo.description && (
-                      <p className="text-xs text-muted-foreground pl-0.5">
-                        {repo.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <div className="flex gap-2">
+              {repositories.map((repo) => (
+                <Badge key={repo.name} variant="secondary" className="font-mono">
+                  {repo.name}
+                </Badge>
+              ))}
+            </div>
           )}
         </header>
 
