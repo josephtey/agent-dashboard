@@ -57,10 +57,11 @@ export default function Dashboard() {
       <div className="min-h-screen bg-slate-50">
         <div className="container mx-auto p-6 pt-12">
           <header className="mb-8">
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start justify-between">
               <div>
-                <div className="h-10 w-32 mb-2 flex items-center">
+                <div className="flex items-center gap-3 mb-2">
                   <span className="text-3xl font-bold text-slate-300">Clide</span>
+                  <Skeleton className="h-5 w-32" />
                 </div>
                 <Skeleton className="h-5 w-96" />
               </div>
@@ -72,7 +73,6 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <Skeleton className="h-5 w-48" />
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -96,9 +96,29 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-50">
       <div className="container mx-auto p-6 pt-12">
         <header className="mb-8">
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Clide</h1>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold">Clide</h1>
+                <div className="flex items-center gap-2">
+                  {groupedTasks.in_progress.length > 0 ? (
+                    <>
+                      <div className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                      </div>
+                      <p className="text-sm font-medium">
+                        LIVE • {groupedTasks.in_progress.length} {groupedTasks.in_progress.length === 1 ? 'AGENT' : 'AGENTS'} RUNNING
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="h-3 w-3 rounded-full bg-slate-300"></div>
+                      <p className="text-sm font-medium text-muted-foreground">AT REST</p>
+                    </>
+                  )}
+                </div>
+              </div>
               <p className="text-muted-foreground">
                 someone to help you manage your agents
               </p>
@@ -119,25 +139,6 @@ export default function Dashboard() {
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            {groupedTasks.in_progress.length > 0 ? (
-              <>
-                <div className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </div>
-                <p className="text-sm font-medium">
-                  LIVE • {groupedTasks.in_progress.length} {groupedTasks.in_progress.length === 1 ? 'AGENT' : 'AGENTS'} RUNNING RIGHT NOW
-                </p>
-              </>
-            ) : (
-              <>
-                <div className="h-3 w-3 rounded-full bg-slate-300"></div>
-                <p className="text-sm font-medium text-muted-foreground">AT REST</p>
-              </>
             )}
           </div>
         </header>
