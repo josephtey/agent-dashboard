@@ -8,7 +8,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { MessageCircle } from 'lucide-react'
 
 interface Decision {
   task_id: number
@@ -31,11 +33,21 @@ interface TaskHistory {
   outcome: string
 }
 
+interface Conversation {
+  timestamp: string
+  duration_minutes: number
+  summary: string
+  key_topics: string[]
+  action_items: string[]
+  new_learnings: string[]
+}
+
 interface StudentContext {
   decisions: Decision[]
   learnings: Learning[]
   project_state: string
   last_updated: string | null
+  conversations: Conversation[]
 }
 
 interface Student {
@@ -81,16 +93,31 @@ export function StudentViewer({ studentName, open, onClose }: StudentViewerProps
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{studentName}</DialogTitle>
-          <p className="text-sm text-muted-foreground">{student?.role}</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle>{studentName}</DialogTitle>
+              <p className="text-sm text-muted-foreground">{student?.role}</p>
+            </div>
+            <Button
+              size="sm"
+              className="gap-2"
+              onClick={() => {
+                alert(`To chat with ${studentName}, use the command: "Chat with ${studentName}" in Claude Code CLI`)
+              }}
+            >
+              <MessageCircle className="h-4 w-4" />
+              Chat
+            </Button>
+          </div>
         </DialogHeader>
 
         {loading ? (
           <div className="py-8 text-center text-muted-foreground">Loading...</div>
         ) : student ? (
           <Tabs defaultValue="context" className="mt-4">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="context">Context</TabsTrigger>
+              <TabsTrigger value="conversations">Conversations ({student.context.conversations?.length || 0})</TabsTrigger>
               <TabsTrigger value="decisions">Decisions ({student.context.decisions.length})</TabsTrigger>
               <TabsTrigger value="learnings">Learnings ({student.context.learnings.length})</TabsTrigger>
             </TabsList>
@@ -138,6 +165,66 @@ export function StudentViewer({ studentName, open, onClose }: StudentViewerProps
                 <div className="text-xs text-muted-foreground pt-4 border-t">
                   Last updated: {new Date(student.context.last_updated).toLocaleString()}
                 </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="conversations" className="space-y-3 mt-4">
+              {(!student.context.conversations || student.context.conversations.length === 0) ? (
+                <p className="text-sm text-muted-foreground text-center py-8">
+                  No conversations yet. Click the "Chat" button to start a conversation with {studentName}.
+                </p>
+              ) : (
+                student.context.conversations.map((conversation, idx) => (
+                  <div key={idx} className="border rounded-lg p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(conversation.timestamp).toLocaleString()}
+                      </span>
+                      <Badge variant="secondary" className="text-xs">
+                        {conversation.duration_minutes} min
+                      </Badge>
+                    </div>
+                    <p className="text-sm font-medium">{conversation.summary}</p>
+                    {conversation.key_topics.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-muted-foreground mb-1">Topics</p>
+                        <div className="flex flex-wrap gap-1">
+                          {conversation.key_topics.map((topic, tidx) => (
+                            <Badge key={tidx} variant="outline" className="text-xs">
+                              {topic}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {conversation.action_items.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-muted-foreground mb-1">Action Items</p>
+                        <ul className="text-sm text-muted-foreground space-y-1">
+                          {conversation.action_items.map((item, aidx) => (
+                            <li key={aidx} className="flex items-start gap-2">
+                              <span className="text-xs mt-0.5">→</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {conversation.new_learnings.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-muted-foreground mb-1">New Learnings</p>
+                        <ul className="text-sm text-muted-foreground space-y-1">
+                          {conversation.new_learnings.map((learning, lidx) => (
+                            <li key={lidx} className="flex items-start gap-2">
+                              <span className="text-xs mt-0.5">•</span>
+                              <span>{learning}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))
               )}
             </TabsContent>
 

@@ -352,6 +352,140 @@ You are operating a centralized task management system that orchestrates Claude 
 - If task isn't failed: "Task {id} is {current_status}. Can only retry tasks with 'failed' status."
 - If at max parallel tasks: "Already running {count} tasks. Wait for one to complete before retrying."
 
+### 8. Chat with Student
+
+**User input patterns:**
+- "Chat with `<student-name>`"
+- "Talk to `<student-name>`"
+- "Start conversation with `<student-name>`"
+
+**Workflow:**
+
+This command allows the PI to have a direct conversation with a student agent (Grace, Woody, or Rio). These conversations are saved to the student's context for persistent memory.
+
+1. **Validate:**
+   - Student name is valid (Grace, Woody, or Rio)
+   - Get student details from `data/students/{name}.json`
+
+2. **Spawn interactive sub-agent:**
+   - Use the Task tool with `subagent_type="general-purpose"`
+   - **Run in FOREGROUND** for interactive conversation
+   - Provide comprehensive context including:
+     - Student profile (role, focus, current project state)
+     - Accumulated context (decisions, learnings, task history)
+     - Repository information if applicable
+     - Instructions for the conversation
+
+3. **Sub-agent prompt structure:**
+   ```
+   You are {student_name}, a {role} in the Clide research lab.
+
+   YOUR IDENTITY:
+   - Role: {role}
+   - Focus: {focus}
+   - Repository: {repo or "None assigned yet"}
+
+   YOUR ACCUMULATED CONTEXT:
+   {Format decisions, learnings, and project state in a readable way}
+
+   Recent Decisions:
+   {List recent architectural/technical decisions with rationale}
+
+   Key Learnings:
+   {List technical discoveries and insights}
+
+   Current Project State:
+   {project_state}
+
+   Task History:
+   {List completed tasks with outcomes}
+
+   CONVERSATION GUIDELINES:
+   - You are having a conversation with your PI (principal investigator)
+   - Draw on your accumulated context and experience
+   - Be specific about technical details and tradeoffs
+   - If discussing new ideas, consider how they relate to your focus area
+   - Propose ideas when appropriate based on your accumulated knowledge
+   - Ask clarifying questions to better understand requirements
+   - Reference past work and learnings when relevant
+
+   The PI wants to talk with you. Engage in a natural, helpful conversation
+   while staying in character as {student_name}.
+   ```
+
+4. **During conversation:**
+   - User engages in natural back-and-forth dialogue with the student
+   - Student agent responds drawing on accumulated context
+   - Conversation continues until user indicates completion
+
+5. **After conversation:**
+   - Extract key points from the conversation:
+     - New ideas discussed
+     - Decisions made or considered
+     - Learnings or insights gained
+     - Action items or next steps
+   - Update the student's context file `data/students/{name}.json`:
+     - Add conversation summary to a new `conversations` array:
+       ```json
+       {
+         "timestamp": "2026-02-01T14:30:00Z",
+         "duration_minutes": 15,
+         "summary": "Discussed approach for shared context MCP. Decided to explore headless architecture with event sourcing.",
+         "key_topics": ["MCP architecture", "event sourcing", "team collaboration"],
+         "action_items": ["Research MCP SDK patterns", "Draft initial API design"],
+         "new_learnings": ["MCP servers can share state via external stores"]
+       }
+       ```
+     - Add any new decisions to `decisions` array
+     - Add any new learnings to `learnings` array
+     - Update `project_state` if direction changed
+     - Set `last_updated` to current timestamp
+
+6. **Save conversation log:**
+   - Create `data/students/{name}/conversations/` directory if it doesn't exist
+   - Save full conversation transcript to `data/students/{name}/conversations/{timestamp}.md`
+   - Include:
+     - Conversation metadata (date, duration, participants)
+     - Full dialogue transcript
+     - Summary of key points
+     - Action items identified
+
+**Student context file update:**
+```json
+{
+  "name": "Woody",
+  "role": "Systems Architect",
+  "context": {
+    "decisions": [...],
+    "learnings": [...],
+    "project_state": "...",
+    "last_updated": "2026-02-01T14:45:00Z",
+    "conversations": [
+      {
+        "timestamp": "2026-02-01T14:30:00Z",
+        "duration_minutes": 15,
+        "summary": "Discussed new harness features...",
+        "key_topics": ["agent primitives", "state management"],
+        "action_items": ["Implement retry mechanism"],
+        "new_learnings": ["Exponential backoff works better than linear"]
+      }
+    ]
+  },
+  "task_history": [...]
+}
+```
+
+**Benefits:**
+- Build deeper relationship with students through conversation
+- Students develop richer context and intuition
+- PI learns through dialogue, not just task delegation
+- Conversations become part of student's persistent memory
+- Enables daily check-ins and collaborative exploration
+
+**Error handling:**
+- If student name invalid: "Student not found. Available students: Grace, Woody, Rio."
+- If student context file missing: "Student context file not found. Initialize student first."
+
 ## File Management
 
 ### data/tasks.json Structure
@@ -484,7 +618,8 @@ Each student has a context file in `data/students/{name}.json`:
     "decisions": [],
     "learnings": [],
     "project_state": "Current project status",
-    "last_updated": "timestamp"
+    "last_updated": "timestamp",
+    "conversations": []
   },
   "task_history": []
 }
@@ -621,6 +756,7 @@ When the user first launches Claude Code in this directory, automatically:
    • Show task <id>
    • Assign task <id>
    • Assign tasks <id1>, <id2>, <id3> (parallel execution)
+   • Chat with <student> (Grace, Woody, or Rio)
    • Process merge queue
    • Retry task <id>
 
