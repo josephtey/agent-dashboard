@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Agent Dashboard",
-  description: "Real-time monitoring for Claude agent tasks",
+  title: "Clide",
+  description: "Your agent orchestration dashboard - manage Claude agents across multiple projects",
 };
 
 export default function RootLayout({
