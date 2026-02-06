@@ -477,12 +477,15 @@ Moves a task from "staging" to "completed" and adds it to the merge queue.
      - Update queue entry status to "merged"
      - Update task `merge_status` to "merged"
      - Remove entry from queue
+     - **Verify worktree cleanup**: Check that worktree was removed by approve command (should have status "removed" in data/worktrees.json)
      - Notify user: "Task {id} merged successfully to main."
    - If CONFLICT:
      - Update queue entry status to "conflict"
      - Update task `merge_status` to "conflict"
      - Keep entry in queue for manual resolution
      - Notify user: "Task {id} has merge conflicts. Resolve conflicts manually in {repo_path}, then run 'Process merge queue' again."
+
+**Note:** Worktrees are cleaned up by the "Approve task" command before tasks are added to merge queue, so they should already be removed by the time merge processing happens.
 
 4. **Continue if auto_merge enabled:**
    - If data/merge-queue.json config has `auto_merge: true`
