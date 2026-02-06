@@ -2,7 +2,7 @@
   "config": {
     "max_parallel_tasks": 3
   },
-  "next_id": 7,
+  "next_id": 9,
   "tasks": [
     {
       "id": 1,
@@ -104,6 +104,41 @@
       "created_at": "2026-02-01T08:00:00Z",
       "assigned_at": null,
       "completed_at": null,
+      "error": null
+    },
+    {
+      "id": 7,
+      "repo": "cortex",
+      "repo_path": "/Users/josephtey/Projects/cortex",
+      "spec_file": "tasks/7/spec.md",
+      "log_file": "tasks/7/agent.log",
+      "title": "Build Cortex Phase 1 MVP - Shared Context MCP Tool",
+      "status": "todo",
+      "branch": null,
+      "agent_id": null,
+      "worktree_path": null,
+      "merge_status": null,
+      "created_at": "2026-02-01T17:30:00Z",
+      "assigned_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    {
+      "id": 8,
+      "repo": "joetey.com",
+      "repo_path": "/Users/josephtey/Projects/joetey.com",
+      "spec_file": "tasks/8/spec.md",
+      "log_file": "tasks/8/agent.log",
+      "title": "Build Hidden Stream Page",
+      "status": "completed",
+      "branch": "feature/task-8",
+      "agent_id": "ab04bd7",
+      "worktree_path": "/Users/josephtey/Projects/joetey.com-task-8",
+      "merge_status": "merged",
+      "created_at": "2026-02-05T14:45:00Z",
+      "assigned_at": "2026-02-05T14:50:00Z",
+      "staging_at": "2026-02-05T15:05:00Z",
+      "completed_at": "2026-02-05T15:40:00Z",
       "error": null
     }
   ]

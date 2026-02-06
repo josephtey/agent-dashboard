@@ -4,11 +4,80 @@
   "focus": "Exploring research directions",
   "repo": "joetey.com",
   "context": {
-    "decisions": [],
-    "learnings": [],
-    "project_state": "Still exploring focus area while helping with various projects",
-    "last_updated": null,
+    "decisions": [
+      {
+        "task_id": 8,
+        "decision": "Used `marked` library for markdown parsing over heavier alternatives like react-markdown",
+        "rationale": "Lightweight (~40KB gzipped vs. ~150KB), simple API suitable for basic markdown rendering needs",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "decision": "Used Vite's import.meta.glob for loading markdown files",
+        "rationale": "Enables static analysis at build time for optimal bundling and automatically handles file watching in dev mode",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "decision": "Implemented isolated dark mode for stream page only",
+        "rationale": "Stream is conceptually separate - a hidden personal space. Maintains site's warm, inviting aesthetic for public pages without state management complexity",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "decision": "Used manual sync script instead of automated file watcher",
+        "rationale": "Personal stream doesn't require real-time updates, manual sync gives control over what gets published, avoids complexity of file watchers and build hooks",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "decision": "Used navigate(-1) for back navigation instead of hardcoded route",
+        "rationale": "More flexible - works if user navigates to stream from any page, not just homepage",
+        "timestamp": "2026-02-05T15:30:00Z"
+      }
+    ],
+    "learnings": [
+      {
+        "task_id": 8,
+        "learning": "Body background management: Must store original document.body.style.backgroundColor value before modification to ensure proper cleanup",
+        "context": "Implemented dark mode isolation for stream page - critical for preventing style bleed to other pages",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "learning": "Keyboard event context handling: Check e.target.tagName to prevent shortcuts from triggering when users are typing in form fields",
+        "context": "Implemented 's' keyboard shortcut - discovered importance of context detection for good UX",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "learning": "Vite import glob syntax: The query: '?raw' parameter is essential for loading markdown files as raw strings",
+        "context": "Loading markdown files with import.meta.glob - without ?raw, Vite attempts to parse them as modules",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "learning": "Timestamp parsing from filenames: RegEx pattern /(\\d{4})-(\\d{2})-(\\d{2})-(\\d{2})(\\d{2})\\.md$/ cleanly extracts date components",
+        "context": "Implemented filename-based timestamp extraction for stream entries",
+        "timestamp": "2026-02-05T15:05:00Z"
+      },
+      {
+        "task_id": 8,
+        "learning": "Animation staggering: Using delay: index * 0.05 in Framer Motion creates pleasing cascading effect",
+        "context": "Implemented entry animations for stream page - small delay multiplier prevents overwhelming simultaneous animations",
+        "timestamp": "2026-02-05T15:05:00Z"
+      }
+    ],
+    "project_state": "Built hidden stream page feature with dark aesthetic, keyboard shortcut access, and Obsidian sync integration. Refined to add bidirectional 's' key navigation and ultra-minimal empty state. Exploring personal site architecture patterns.",
+    "last_updated": "2026-02-05T15:30:00Z",
     "conversations": []
   },
-  "task_history": []
+  "task_history": [
+    {
+      "task_id": 8,
+      "title": "Build Hidden Stream Page",
+      "completed_at": "2026-02-05T15:05:00Z",
+      "outcome": "success"
+    }
+  ]
 }

@@ -96,6 +96,9 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
               {task.status === 'in_progress' && (
                 <Loader2 className="h-4 w-4 animate-spin text-blue-600 flex-shrink-0" />
               )}
+              {task.status === 'staging' && (
+                <div className="h-2 w-2 rounded-full bg-amber-500 flex-shrink-0" title="Ready for review" />
+              )}
               <CardTitle className="text-sm font-semibold leading-tight">
                 #{task.id} {task.title}
               </CardTitle>

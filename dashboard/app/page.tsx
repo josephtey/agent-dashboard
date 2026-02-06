@@ -79,6 +79,7 @@ export default function Dashboard() {
   const groupedTasks = {
     todo: tasks.filter(t => t.status === 'todo'),
     in_progress: tasks.filter(t => t.status === 'in_progress'),
+    staging: tasks.filter(t => t.status === 'staging'),
     completed: tasks.filter(t => t.status === 'completed'),
     failed: tasks.filter(t => t.status === 'failed'),
   }
@@ -207,7 +208,7 @@ export default function Dashboard() {
                 Your personal research lab
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                {tasks.length} total tasks • {groupedTasks.in_progress.length} running •{' '}
+                {tasks.length} total tasks • {groupedTasks.in_progress.length} running • {groupedTasks.staging.length} staging •{' '}
                 {config.max_parallel_tasks - groupedTasks.in_progress.length} slots available
               </p>
             </div>

@@ -4,11 +4,102 @@
   "focus": "Mastering agent harness design and infrastructure",
   "repo": "beyond-agents",
   "context": {
-    "decisions": [],
-    "learnings": [],
-    "project_state": "Building out agent harness features",
-    "last_updated": null,
-    "conversations": []
+    "decisions": [
+      {
+        "task_id": null,
+        "decision": "Prioritize agentic search as first major functionality over basic tools",
+        "rationale": "Agentic search provides immediate usefulness for codebase exploration. Forces solving important problems (parallel execution) early. The async architecture is already set up perfectly for this. Basic tools like write_file, run_bash can be added later as they're straightforward.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Build agentic search in three phases: basic tools → parallel execution → search index",
+        "rationale": "Start with MVP search tools (view_file, list_directory, grep_search) using sequential execution. Then optimize with parallel tool execution for 4x speed improvement. Finally add full-text search index for scale. This progressive approach gets something working quickly while building toward the full vision.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Use full-text search (Tantivy) over vector embeddings for codebase search",
+        "rationale": "Full-text search provides predictable, interpretable results. Dense embeddings struggle with long documents, require chunking that destroys structure, and demand separate transformer infrastructure. The README research backs this approach.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      }
+    ],
+    "learnings": [
+      {
+        "task_id": null,
+        "learning": "Beyond-agents has solid async foundation: AsyncAnthropic client, async tools, async MCP client with persistent connections",
+        "context": "Explored src/agent.py, src/tools/base.py, and README. The architecture is production-ready for async operations. This makes parallel tool execution a natural extension rather than a major refactor.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Current tool execution is sequential in agent.py:130-161",
+        "context": "The tool execution loop processes tool_uses one at a time with await. To enable parallel search, need to modify this to execute multiple tools concurrently using asyncio.gather or similar.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Agentic search achieves 4x latency reduction through parallel tool execution",
+        "context": "From README Phase 4c notes: Fast Agentic Search reduces from 20→5 turns with ~71% accuracy and 13.6% token reduction. Enables 4-12 simultaneous tool calls per turn. The key is executing search operations in parallel rather than sequentially.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Search → Filter → Report workflow prevents context pollution",
+        "context": "Agentic search should be a discrete retrieval task. Agent receives search result summaries first, decides which documents to read fully, then reports back. This keeps the main conversation context clean and prevents loading unnecessary files.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Agentic search enables multi-step reasoning beyond traditional RAG",
+        "context": "Unlike RAG (vector embeddings + offline indexing), agentic search can 'iteratively refine its judgement on file relevance by reasoning about information collected from other files.' The agent dynamically explores the codebase based on what it discovers.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Current tools: read_file (local async) and web_search (via MCP server)",
+        "context": "ReadFileTool uses asyncio.to_thread for non-blocking file I/O. Web search uses MCP with persistent connection. Tool registry pattern in src/tools/registry.py makes adding new tools straightforward - just inherit from Tool base class and register.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "README Phase 4c has comprehensive agentic search architecture notes",
+        "context": "Detailed notes on core tools needed (view_file, view_directory, grep_search, report_back), why full-text over embeddings, parallel execution importance, Reciprocal Rank Fusion for merging results, offline document augmentation. References to Relace AI and Ben Anderson blog posts. This is already well-researched - just need to implement.",
+        "timestamp": "2026-02-01T20:15:00Z"
+      }
+    ],
+    "project_state": "Explored beyond-agents architecture and identified agentic search as the ideal first major functionality. Current state: solid async foundation with tool registry pattern, basic tools (read_file, web_search). Decision made to build agentic search in three phases: (1) basic search tools with sequential execution, (2) parallel tool execution for 4x speed improvement, (3) full-text search index. This approach prioritizes immediate usefulness (codebase exploration) while forcing us to solve the important architectural problems (parallel execution) early. Next step: confirm approach tomorrow and begin implementation planning.",
+    "last_updated": "2026-02-01T20:15:00Z",
+    "conversations": [
+      {
+        "timestamp": "2026-02-01T20:05:00Z",
+        "duration_minutes": 10,
+        "summary": "Explored beyond-agents codebase and discussed agentic search as first major functionality. Analyzed current async architecture, tool registry pattern, and README roadmap. Decided to prioritize agentic search despite being Phase 4c because it provides immediate value and forces solving parallel execution early. Proposed three-phase implementation approach.",
+        "key_topics": [
+          "Agentic search architecture",
+          "Beyond-agents codebase structure",
+          "Parallel tool execution",
+          "Full-text search vs embeddings",
+          "Tool registry pattern",
+          "Async architecture foundations",
+          "Implementation phasing strategy"
+        ],
+        "action_items": [
+          "Confirm agentic search approach tomorrow",
+          "Decide whether to start with basic tools or tackle parallel execution immediately",
+          "Begin detailed implementation planning for Phase 1 (basic search tools)",
+          "Research Python full-text search libraries (alternative to Tantivy)"
+        ],
+        "new_learnings": [
+          "Beyond-agents has production-ready async architecture",
+          "Tool execution loop in agent.py:130-161 is sequential - needs modification for parallel",
+          "Agentic search provides 4x latency reduction via parallel execution",
+          "Search → Filter → Report workflow keeps context clean",
+          "Full-text search preferred over embeddings for predictability",
+          "README already has comprehensive agentic search research documented"
+        ]
+      }
+    ]
   },
   "task_history": []
 }

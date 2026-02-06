@@ -7,6 +7,7 @@ interface KanbanBoardProps {
   tasks: {
     todo: Task[]
     in_progress: Task[]
+    staging: Task[]
     completed: Task[]
     failed: Task[]
   }
@@ -17,12 +18,13 @@ export function KanbanBoard({ tasks, onTaskClick }: KanbanBoardProps) {
   const columns = [
     { key: 'todo' as const, title: 'To Do', tasks: tasks.todo },
     { key: 'in_progress' as const, title: 'In Progress', tasks: tasks.in_progress },
+    { key: 'staging' as const, title: 'Staging', tasks: tasks.staging },
     { key: 'completed' as const, title: 'Completed', tasks: tasks.completed },
     { key: 'failed' as const, title: 'Failed', tasks: tasks.failed },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
       {columns.map((column) => (
         <div key={column.key} className="flex flex-col gap-4">
           <div className="sticky top-0 py-3 z-10">

@@ -4,11 +4,177 @@
   "focus": "Building a shared context layer for teams",
   "repo": null,
   "context": {
-    "decisions": [],
-    "learnings": [],
-    "project_state": "Exploring initial concepts for shared context MCP product",
-    "last_updated": null,
-    "conversations": []
+    "decisions": [
+      {
+        "task_id": null,
+        "decision": "Target ARC Institute DNA language model researchers as initial use case",
+        "rationale": "Clear, focused use case with close-knit research team working on related experiments. Privacy concerns minimal within single focused research group. High value from shared context on experimental designs and results.",
+        "timestamp": "2026-02-01T15:30:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Use headless MCP architecture for shared lab notebook",
+        "rationale": "Runs transparently alongside Claude Code without requiring special UI. Researchers can opt-in to save context moments. Medium is Claude Code conversation streams which are information-dense.",
+        "timestamp": "2026-02-01T15:30:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Phase 1: User-controlled selective capture, not automatic logging",
+        "rationale": "Build trust first. Let researchers explicitly mark moments worth saving to shared notebook. Reduces privacy concerns and ensures quality signal.",
+        "timestamp": "2026-02-01T15:30:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Start with simple event log structure, evolve to knowledge graph",
+        "rationale": "Don't need perfect structure from day one. Messy event logs can gradually get organized as usage patterns emerge. Structure follows usage.",
+        "timestamp": "2026-02-01T15:30:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Treat ARC deployment as product validation experiment, not just pilot",
+        "rationale": "Building at ARC validates whether shared context works in practice. Critical unknowns: security concerns, psychological impact of 'always listening', behavioral changes when people know context is being captured, real-world usage patterns. Getting into real environment is essential for product evolution beyond theory.",
+        "timestamp": "2026-02-01T16:10:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Position as infrastructure for institutional self-modeling, not pre-built models",
+        "rationale": "Each institution should model itself with its own data (Arc models Arc, not universal template). This is Notion-style primitives vs Salesforce-style pre-built models. Enables novel organizational forms like Patrick Hsu's agent-run institution vision. Makes competitive threat from Claude/OpenAI Enterprise less scary - they build horizontal, we build customizable vertical.",
+        "timestamp": "2026-02-02T14:00:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Arc MVP is context collector only, no intelligence layer yet",
+        "rationale": "Need to solve context collection interface problem first before building agents or intelligence on top. Can't just dump everything (overwhelming/low-signal). Must find right interaction model that balances friction vs signal quality.",
+        "timestamp": "2026-02-02T14:00:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Differentiate from Claude Enterprise via domain-specific intelligence",
+        "rationale": "Claude Enterprise has generic shared context ('search what your team asked'). We build proactive intelligence that understands scientific work: experimental trajectories, contradictory results, similar experiments across researchers, relevant prior work surfacing. The moat is deep domain modeling, not just having shared context.",
+        "timestamp": "2026-02-02T14:00:00Z"
+      }
+    ],
+    "learnings": [
+      {
+        "task_id": null,
+        "learning": "Claude Code conversations are incredibly information-dense capture medium",
+        "context": "Every prompt, result, and iteration contains experimental context that currently evaporates. This richness makes it ideal for context extraction without special logging infrastructure.",
+        "timestamp": "2026-02-01T15:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Shared context layer can 'infiltrate' organization through universal Claude Code adoption",
+        "rationale": "If everyone uses Claude Code as universal interface, shared context layer just runs headlessly in background building organizational memory. No special infrastructure needed.",
+        "timestamp": "2026-02-01T15:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Knowledge graph should detect patterns: similar experiments, contradictory results, related hypotheses",
+        "context": "Phase 3 capability. If three researchers unknowingly run similar experiments, system recognizes linkages and creates connections. Starts understanding team structure and research directions.",
+        "timestamp": "2026-02-01T15:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Research institutions are perfect early adopters - collaborative environments with accelerating Claude Code adoption",
+        "context": "Computational biology and ML research are collaborative but knowledge-siloed. Researchers increasingly use Claude Code for experiments. Perfect timing: infrastructure for capture already exists through Claude Code. This could automate knowledge infrastructure (not research itself) - turning institutional memory from informal/lossy (lab meetings, hallway chats) into automated substrate. Each experiment enriches living knowledge graph. Compounds over time as institution develops collective intuition.",
+        "timestamp": "2026-02-01T16:00:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "ARC deployment is validation experiment for core product questions",
+        "context": "Main limitations to validate in real-world: (1) Security - how do people actually feel about privacy? (2) Psychological - does 'always listening' change behavior? (3) Fear/trust - what makes people comfortable sharing context? (4) Behavioral patterns - what usage patterns emerge organically vs theoretically? Real deployment reveals product-market fit signals that can't be discovered in theory. ARC becomes laboratory for learning how shared context works in practice.",
+        "timestamp": "2026-02-01T16:10:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Scientific institutions are extremely poorly organized - they are the real beneficiaries",
+        "context": "Lab notebooks are done terribly, knowledge is everywhere and nowhere. Scientific institutions have massive organizational dysfunction around knowledge management. This isn't a nice-to-have for them - it solves a critical pain point. They are the real beneficiaries because the problem is most acute in research environments where knowledge loss directly impacts scientific progress.",
+        "timestamp": "2026-02-01T16:15:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "The organization itself is best positioned to model the organization, not external AI companies",
+        "context": "Discussion about competitive threat from Claude/OpenAI Enterprise. Key insight: they have horizontal shared context, but the company with most context about Arc Institute IS Arc Institute. Each institution should build its own model from its own data. This fundamentally shifts product positioning from 'we have the best model' to 'we provide the best primitives for self-modeling'.",
+        "timestamp": "2026-02-02T14:00:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Context collection interface is the critical technical problem",
+        "context": "Can't just 'plug and dump all context from everything' - that's overwhelming and low-signal. Need to solve: what's the interaction model for selective context collection? Options include manual save tool, auto-capture with opt-out, end-of-session summaries, prompted capture at key moments, or full passive capture. Each has different tradeoffs between friction and signal quality.",
+        "timestamp": "2026-02-02T14:00:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Agent feedback loops could be alternative context collection interface",
+        "context": "Instead of passive context capture, deploy an agent to help with workflows. When agent does something wrong, researchers give feedback ('we don't use that assay anymore'). The feedback itself becomes the context - concrete corrections that shape agent behavior. Feedback is more concrete than abstract 'save this moment'. Explored but decided Arc MVP should start simpler with just context collection.",
+        "timestamp": "2026-02-02T14:00:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Patrick Hsu (Arc Institute founder) is interested in agent-run scientific institutions",
+        "context": "Patrick Hsu is 'agent pilled' and wants to explore running scientific institutions using agents across departments. This validates the long-term vision: context collection first, workflows emerge from that context, then spawn agents from the living organizational model. Institution-specific agents that understand Arc's unique way of working.",
+        "timestamp": "2026-02-02T14:00:00Z"
+      }
+    ],
+    "project_state": "MAJOR STRATEGIC PIVOT: Product is infrastructure for institutional self-modeling, not a pre-built model of how science works. Each institution builds its own organizational model from its own data - Arc models Arc, not a universal 'research lab template'. This positions us as primitives (like Notion) vs pre-built model (like Salesforce). Patrick Hsu is interested in running scientific institutions with agents - this framework enables that. COMPETITIVE POSITIONING: Claude/OpenAI Enterprise have horizontal shared context, we're building vertical domain intelligence that understands scientific work patterns. Arc MVP scope: pure context collector first, no intelligence layer yet. CRITICAL BLOCKER: Context collection interface design. Can't just dump everything (overwhelming/low-signal). Options: manual save tool, auto-capture with opt-out, end-of-session summaries, prompted capture at key moments, or full passive capture. Also explored: agent feedback loops as alternative (deploy agent, collect corrections, feedback becomes context). Next: decide on context collection interface, research Arc workflows to inform design.",
+    "last_updated": "2026-02-02T14:00:00Z",
+    "conversations": [
+      {
+        "timestamp": "2026-02-01T15:00:00Z",
+        "duration_minutes": 12,
+        "summary": "Discussed shared context MCP product vision targeting ARC Institute DNA language model researchers. Clarified it's a headless lab notebook that runs alongside Claude Code, capturing experimental context through conversation streams. Defined three-phase MVP approach starting with user-controlled selective capture.",
+        "key_topics": [
+          "MCP architecture",
+          "ARC Institute use case",
+          "DNA language model experiments",
+          "Headless context capture",
+          "Knowledge graph evolution",
+          "Privacy and transparency"
+        ],
+        "action_items": [
+          "Detail main technical implementation tasks for Phase 1 MVP",
+          "Design MCP tool interface for saving context moments",
+          "Plan event log data structure for experimental captures",
+          "Research MCP SDK patterns for headless servers",
+          "Define query interface for retrieving shared context",
+          "Prototype smart linking detection for Phase 3"
+        ],
+        "new_learnings": [
+          "Claude Code conversations are information-dense capture medium - every prompt/result contains experimental context",
+          "Shared context can infiltrate organization through universal Claude Code adoption without special infrastructure",
+          "Structure should emerge from usage patterns rather than being imposed upfront",
+          "Privacy less critical within focused research team working on related problems",
+          "Knowledge graph should detect patterns: similar experiments, contradictions, related hypotheses"
+        ]
+      },
+      {
+        "timestamp": "2026-02-02T14:00:00Z",
+        "duration_minutes": 10,
+        "summary": "Discussed competitive positioning against Claude/OpenAI Enterprise. Arrived at major strategic pivot: product should be infrastructure for institutional self-modeling (each org models itself) rather than pre-built universal models. Explored agent feedback as context collection mechanism but decided Arc MVP should be pure context collector first. Critical blocker: need to solve context collection interface design.",
+        "key_topics": [
+          "Patrick Hsu and agent-run institutions",
+          "Competitive dynamics with Claude/OpenAI Enterprise",
+          "Institutional self-modeling vs universal models",
+          "Context collection interface design",
+          "Agent feedback loops as alternative approach",
+          "MVP scoping and prioritization",
+          "Product differentiation strategy"
+        ],
+        "action_items": [
+          "Evaluate context collection interface options (manual, auto with opt-out, summaries, prompted, passive)",
+          "Research Arc researchers' actual workflows to inform interface design",
+          "Consider connecting with Patrick Hsu about institutional self-modeling concept",
+          "Decide on specific interaction model for context capture before building intelligence layer"
+        ],
+        "new_learnings": [
+          "Organizations are best positioned to model themselves with their own data, not external AI companies",
+          "Context collection interface is the critical technical problem - can't just dump everything",
+          "Agent feedback loops could serve as alternative context collection interface",
+          "Patrick Hsu is interested in agent-run scientific institutions across departments",
+          "Differentiation comes from domain-specific intelligence, not generic shared context"
+        ]
+      }
+    ]
   },
   "task_history": []
 }

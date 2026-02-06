@@ -363,6 +363,7 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
 
   const getStatusVariant = (status: Task['status']) => {
     if (status === 'in_progress') return 'default'
+    if (status === 'staging') return 'default'
     if (status === 'completed') return 'secondary'
     if (status === 'failed') return 'destructive'
     return 'outline'

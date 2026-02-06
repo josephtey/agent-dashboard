@@ -5,6 +5,18 @@
       "path": "/Users/josephtey/Projects/joetey.com",
       "description": "Personal website",
       "main_branch": "main"
+    },
+    {
+      "name": "beyond-agents",
+      "path": "/Users/josephtey/Projects/beyond-agents",
+      "description": "",
+      "main_branch": "main"
+    },
+    {
+      "name": "cortex",
+      "path": "/Users/josephtey/Projects/cortex",
+      "description": "Shared context layer for AI teams",
+      "main_branch": "main"
     }
   ]
 }
