@@ -79,6 +79,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       <Card
         className="cursor-pointer hover:shadow-lg transition-all hover:border-slate-300 dark:hover:border-slate-600 overflow-hidden h-full flex flex-col"
         onClick={onClick}
+        data-task-id={task.id}
       >
         {/* Colored repo header */}
         <div className={`${repoColor} px-3 py-1 text-[10px] font-semibold uppercase tracking-wide flex-shrink-0`}>

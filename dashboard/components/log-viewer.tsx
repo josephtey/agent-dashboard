@@ -20,10 +20,11 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
   const [spec, setSpec] = useState<string>('')
   const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'spec' | 'logs'>('spec')
-  const [viewMode, setViewMode] = useState<'conversation' | 'raw'>('conversation')
+  const [viewMode, setViewMode] = useState<'conversation' | 'raw'>('raw')
   const [isLoadingSpec, setIsLoadingSpec] = useState(true)
   const [isLoadingLogs, setIsLoadingLogs] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [hasJsonLogs, setHasJsonLogs] = useState(false)
 
   // Fetch spec file
   useEffect(() => {
@@ -324,8 +325,17 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
 
   const parseRawView = () => {
     if (!logs) return null
+    // If logs look like markdown, render them nicely
+    if (logs.includes('##') || logs.includes('###') || logs.includes('```')) {
+      return (
+        <div className="prose prose-sm prose-invert max-w-none">
+          {renderMarkdown(logs)}
+        </div>
+      )
+    }
+    // Otherwise show as plain text
     return (
-      <pre className="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">
+      <pre className="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed font-mono">
         {logs}
       </pre>
     )
@@ -341,6 +351,22 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
       const data = JSON.parse(event.data)
       setLogs(data.content)
       setIsLoadingLogs(false)
+
+      // Detect if logs are in JSON-lines format
+      if (data.content) {
+        const firstLine = data.content.split('\n').find(line => line.trim())
+        try {
+          if (firstLine) {
+            JSON.parse(firstLine)
+            setHasJsonLogs(true)
+            setViewMode('conversation')
+          }
+        } catch {
+          // Not JSON, markdown logs
+          setHasJsonLogs(false)
+          setViewMode('raw')
+        }
+      }
 
       // Auto-scroll to bottom
       setTimeout(() => {
@@ -382,7 +408,7 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
               <Badge variant={getStatusVariant(task.status)}>
                 {task.status.replace('_', ' ').toUpperCase()}
               </Badge>
-              {activeTab === 'logs' && (
+              {activeTab === 'logs' && hasJsonLogs && (
                 <div className="flex items-center gap-1 border rounded-md">
                   <Button
                     variant={viewMode === 'conversation' ? 'secondary' : 'ghost'}

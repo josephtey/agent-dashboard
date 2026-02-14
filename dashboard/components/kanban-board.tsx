@@ -31,7 +31,7 @@ export function KanbanBoard({ tasks, onTaskClick }: KanbanBoardProps) {
   ]
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="kanban-board">
       {/* Layout Toggle */}
       <div className="flex justify-end">
         <TooltipProvider>
