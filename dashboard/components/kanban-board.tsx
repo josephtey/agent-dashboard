@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Task } from '@/lib/schemas'
 import { TaskCard } from './task-card'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { LayoutGrid, Rows3 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -96,6 +96,7 @@ export function KanbanBoard({ tasks, onTaskClick }: KanbanBoardProps) {
                     ))
                   )}
                 </div>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </div>
           ))}
