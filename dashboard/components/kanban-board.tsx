@@ -27,7 +27,7 @@ export function KanbanBoard({ tasks, onTaskClick }: KanbanBoardProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
       {columns.map((column) => (
         <div key={column.key} className="flex flex-col gap-4">
-          <div className="sticky top-0 py-3 z-10">
+          <div className="py-3 bg-background">
             <h2 className="text-lg font-semibold">
               {column.title}
               <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -38,7 +38,7 @@ export function KanbanBoard({ tasks, onTaskClick }: KanbanBoardProps) {
 
           <div className="flex flex-col gap-3">
             {column.tasks.length === 0 ? (
-              <div className="text-sm text-muted-foreground text-center py-8 border-2 border-dashed rounded-lg bg-white">
+              <div className="text-sm text-muted-foreground text-center py-8 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-card">
                 No tasks
               </div>
             ) : (

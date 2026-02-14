@@ -60,14 +60,14 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       hash = hash & hash // Convert to 32bit integer
     }
     const colors = [
-      { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
-      { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-200' },
-      { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' },
-      { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200' },
-      { bg: 'bg-pink-100', text: 'text-pink-700', border: 'border-pink-200' },
-      { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-200' },
-      { bg: 'bg-teal-100', text: 'text-teal-700', border: 'border-teal-200' },
-      { bg: 'bg-rose-100', text: 'text-rose-700', border: 'border-rose-200' },
+      'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700/50',
+      'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700/50',
+      'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700/50',
+      'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700/50',
+      'bg-pink-100 text-pink-700 border-pink-200 dark:bg-pink-900/30 dark:text-pink-300 dark:border-pink-700/50',
+      'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-700/50',
+      'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:border-teal-700/50',
+      'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:border-rose-700/50',
     ]
     return colors[Math.abs(hash) % colors.length]
   }
@@ -77,11 +77,11 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
   return (
     <TooltipProvider>
       <Card
-        className="cursor-pointer hover:shadow-lg transition-all hover:border-slate-300 overflow-hidden"
+        className="cursor-pointer hover:shadow-lg transition-all hover:border-slate-300 dark:hover:border-slate-600 overflow-hidden"
         onClick={onClick}
       >
         {/* Colored repo header */}
-        <div className={`${repoColor.bg} ${repoColor.text} px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide`}>
+        <div className={`${repoColor} px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide`}>
           {task.repo}
         </div>
 
@@ -94,10 +94,10 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2 flex-1 min-w-0">
               {task.status === 'in_progress' && (
-                <Loader2 className="h-4 w-4 animate-spin text-blue-600 flex-shrink-0" />
+                <Loader2 className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400 flex-shrink-0" />
               )}
               {task.status === 'staging' && (
-                <div className="h-2 w-2 rounded-full bg-amber-500 flex-shrink-0" title="Ready for review" />
+                <div className="h-2 w-2 rounded-full bg-amber-500 dark:bg-amber-400 flex-shrink-0" title="Ready for review" />
               )}
               <CardTitle className="text-sm font-semibold leading-tight">
                 #{task.id} {task.title}
@@ -134,7 +134,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
             )}
 
             {task.error && (
-              <div className="mt-2 p-2 bg-red-50 rounded text-red-700">
+              <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/30 rounded text-red-700 dark:text-red-300">
                 <span className="font-medium">Error:</span> {task.error}
               </div>
             )}

@@ -145,7 +145,7 @@ export function StudentViewer({ studentName, open, onClose }: StudentViewerProps
                   <h3 className="text-sm font-semibold mb-2">Task History</h3>
                   <div className="space-y-2">
                     {student.task_history.map((task) => (
-                      <div key={task.task_id} className="flex items-start gap-2 text-sm border-l-2 border-slate-200 pl-3 py-1">
+                      <div key={task.task_id} className="flex items-start gap-2 text-sm border-l-2 border-slate-200 dark:border-slate-700 pl-3 py-1">
                         <Badge variant={task.outcome === 'success' ? 'default' : 'destructive'} className="text-xs">
                           #{task.task_id}
                         </Badge>

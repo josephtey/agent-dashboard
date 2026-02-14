@@ -75,12 +75,12 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
           elements.push(
             <div key={i} className="my-4">
               {codeBlockLanguage && (
-                <div className="bg-slate-100 px-3 py-1 text-xs text-slate-600 font-mono border border-slate-200 rounded-t-md">
+                <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs text-slate-600 dark:text-slate-300 font-mono border border-slate-200 dark:border-slate-700 rounded-t-md">
                   {codeBlockLanguage}
                 </div>
               )}
-              <pre className={`bg-slate-50 border border-slate-200 p-4 overflow-x-auto font-mono text-xs leading-relaxed ${codeBlockLanguage ? 'rounded-b-md' : 'rounded-md'}`}>
-                <code className="text-slate-800">{codeBlockContent.join('\n')}</code>
+              <pre className={`bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 overflow-x-auto font-mono text-xs leading-relaxed ${codeBlockLanguage ? 'rounded-b-md' : 'rounded-md'}`}>
+                <code className="text-slate-800 dark:text-slate-200">{codeBlockContent.join('\n')}</code>
               </pre>
             </div>
           )
@@ -98,25 +98,25 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
 
       // Headers
       if (line.startsWith('# ')) {
-        elements.push(<h1 key={i} className="text-2xl font-bold mb-3 mt-6 text-slate-900">{line.slice(2)}</h1>)
+        elements.push(<h1 key={i} className="text-2xl font-bold mb-3 mt-6 text-slate-900 dark:text-slate-100">{line.slice(2)}</h1>)
         continue
       }
       if (line.startsWith('## ')) {
-        elements.push(<h2 key={i} className="text-xl font-bold mb-2 mt-5 text-slate-800">{line.slice(3)}</h2>)
+        elements.push(<h2 key={i} className="text-xl font-bold mb-2 mt-5 text-slate-800 dark:text-slate-200">{line.slice(3)}</h2>)
         continue
       }
       if (line.startsWith('### ')) {
-        elements.push(<h3 key={i} className="text-lg font-semibold mb-2 mt-4 text-slate-700">{line.slice(4)}</h3>)
+        elements.push(<h3 key={i} className="text-lg font-semibold mb-2 mt-4 text-slate-700 dark:text-slate-300">{line.slice(4)}</h3>)
         continue
       }
       if (line.startsWith('#### ')) {
-        elements.push(<h4 key={i} className="text-base font-semibold mb-1 mt-3 text-slate-700">{line.slice(5)}</h4>)
+        elements.push(<h4 key={i} className="text-base font-semibold mb-1 mt-3 text-slate-700 dark:text-slate-300">{line.slice(5)}</h4>)
         continue
       }
 
       // Horizontal rule
       if (line.trim() === '---') {
-        elements.push(<hr key={i} className="my-6 border-slate-200" />)
+        elements.push(<hr key={i} className="my-6 border-slate-200 dark:border-slate-700" />)
         continue
       }
 
@@ -125,16 +125,16 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
         const content = line.replace(/^[\s]*[-*]\s/, '')
         const formatted = content
           .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-          .replace(/`(.+?)`/g, '<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700">$1</code>')
-        elements.push(<li key={i} className="ml-6 mb-1 list-disc text-slate-700" dangerouslySetInnerHTML={{ __html: formatted }} />)
+          .replace(/`(.+?)`/g, '<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700 dark:text-slate-200">$1</code>')
+        elements.push(<li key={i} className="ml-6 mb-1 list-disc text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: formatted }} />)
         continue
       }
       if (line.match(/^[\s]*\d+\.\s/)) {
         const content = line.replace(/^[\s]*\d+\.\s/, '')
         const formatted = content
           .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-          .replace(/`(.+?)`/g, '<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700">$1</code>')
-        elements.push(<li key={i} className="ml-6 mb-1 list-decimal text-slate-700" dangerouslySetInnerHTML={{ __html: formatted }} />)
+          .replace(/`(.+?)`/g, '<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700 dark:text-slate-200">$1</code>')
+        elements.push(<li key={i} className="ml-6 mb-1 list-decimal text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: formatted }} />)
         continue
       }
 
@@ -145,7 +145,7 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
         elements.push(
           <div key={i} className="flex items-start gap-2 ml-6 mb-1">
             <input type="checkbox" checked={checked} readOnly className="mt-1" />
-            <span className="text-slate-700">{content}</span>
+            <span className="text-slate-700 dark:text-slate-300">{content}</span>
           </div>
         )
         continue
@@ -153,9 +153,9 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
 
       // Inline formatting
       let formatted = line
-        .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-slate-100">$1</strong>')
         .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
-        .replace(/`(.+?)`/g, '<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700">$1</code>')
+        .replace(/`(.+?)`/g, '<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-xs text-slate-700 dark:text-slate-200">$1</code>')
 
       // Empty lines
       if (line.trim() === '') {
@@ -164,7 +164,7 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
       }
 
       // Regular paragraph
-      elements.push(<p key={i} className="mb-2 text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />)
+      elements.push(<p key={i} className="mb-2 text-slate-700 dark:text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />)
     }
 
     return <div className="space-y-1">{elements}</div>
@@ -440,7 +440,7 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
 
         <ScrollArea ref={scrollRef} className="h-[calc(100vh-200px)] mt-6">
           {activeTab === 'spec' ? (
-            <div className="rounded-lg border border-slate-200 bg-white p-6">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-card p-6">
               {isLoadingSpec ? (
                 <div className="space-y-3">
                   <Skeleton className="h-8 w-3/4" />
@@ -461,7 +461,7 @@ export function LogViewer({ task, open, onClose }: LogViewerProps) {
               )}
             </div>
           ) : (
-            <div className="rounded-lg border border-slate-800 bg-slate-950 text-slate-50 p-6">
+            <div className="rounded-lg border border-slate-800 dark:border-slate-700 bg-slate-950 dark:bg-slate-900/50 text-slate-50 p-6">
               {isLoadingLogs ? (
                 <div className="flex flex-col items-center justify-center py-12 space-y-4">
                   <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
