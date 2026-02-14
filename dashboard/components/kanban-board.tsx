@@ -78,26 +78,36 @@ export function KanbanBoard({ tasks, onTaskClick }: KanbanBoardProps) {
                 </span>
               </div>
 
-              {/* Horizontal Scrolling Container */}
-              <ScrollArea className="w-full">
-                <div className="flex gap-3 pb-4">
-                  {column.tasks.length === 0 ? (
-                    <div className="h-[140px] text-sm text-muted-foreground flex items-center justify-center px-8 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-card min-w-[200px]">
-                      No tasks
-                    </div>
-                  ) : (
-                    column.tasks.map((task) => (
-                      <div key={task.id} className="w-80 flex-shrink-0 h-[140px]">
-                        <TaskCard
-                          task={task}
-                          onClick={() => onTaskClick(task)}
-                        />
+              {/* Horizontal Scrolling Container with Fade */}
+              <div className="relative">
+                {/* Left fade */}
+                {column.tasks.length > 0 && (
+                  <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                )}
+                {/* Right fade */}
+                {column.tasks.length > 0 && (
+                  <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+                )}
+                <ScrollArea className="w-full">
+                  <div className="flex gap-3 pb-4">
+                    {column.tasks.length === 0 ? (
+                      <div className="h-[140px] text-sm text-muted-foreground flex items-center justify-center px-8 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-card min-w-[200px]">
+                        No tasks
                       </div>
-                    ))
-                  )}
-                </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+                    ) : (
+                      column.tasks.map((task) => (
+                        <div key={task.id} className="w-80 flex-shrink-0 h-[140px]">
+                          <TaskCard
+                            task={task}
+                            onClick={() => onTaskClick(task)}
+                          />
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </div>
             </div>
           ))}
         </div>
