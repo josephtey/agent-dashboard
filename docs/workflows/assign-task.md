@@ -61,7 +61,13 @@ Since agent runs in foreground, it blocks until complete.
 - Keep worktree active (do NOT cleanup)
 - Keep data/worktrees.json entry status as "active"
 - Update student context with decisions and learnings from agent log
-- Notify user: "Task {id} moved to staging. Worktree at {worktree_path}. You can now test and request refinements using 'Refine task {id}: <description>'. When satisfied, use 'Approve task {id}' to complete."
+- **Create Pull Request:**
+  - Push branch to remote: `git push -u origin feature/task-{id}`
+  - Generate PR description from spec and commits
+  - Create PR: `gh pr create --title "{task_title}" --body "{generated_description}"`
+  - Store PR URL in task data: `tasks/{id}/pr_url.txt`
+  - Update `data/tasks.json` with `pr_url` field
+- Notify user: "Task {id} moved to staging. PR created at {pr_url}. You can now test and request refinements using 'Refine task {id}: <description>'. When satisfied, use 'Approve task {id}' to complete."
 
 **On Failure:**
 - Update task status to "failed"

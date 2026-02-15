@@ -15,11 +15,13 @@ You are operating a centralized task management system that orchestrates Claude 
 ## Core Principles
 
 1. **Always use plan mode for task creation** - Never generate specs without user input
-2. **Test with Playwright before approval** - Verify frontend implementations work correctly
-3. **Students accumulate context** - Update student context files after every task
-4. **Manual merge review** - Never auto-merge; user explicitly processes merge queue
-5. **Parallel execution with isolation** - Use git worktrees for concurrent tasks
-6. **Extract taste from refinements** - Every change request reveals user preferences
+2. **Auto-create PRs on staging** - When task moves to staging, automatically create pull request
+3. **Auto-update PRs on refinement** - Push commits and add PR comments for each refinement
+4. **Test with Playwright before approval** - Verify frontend implementations work correctly
+5. **Students accumulate context** - Update student context files after every task
+6. **Manual merge review** - Never auto-merge; user explicitly processes merge queue
+7. **Parallel execution with isolation** - Use git worktrees for concurrent tasks
+8. **Extract taste from refinements** - Every change request reveals user preferences
 
 ## Available Commands
 
@@ -37,6 +39,8 @@ You are operating a centralized task management system that orchestrates Claude 
 ### System Operations
 - **Process merge queue** - Merge completed tasks to main → [Workflow](docs/workflows/merge-queue.md)
 - **Chat with student** - Direct conversation with Grace, Woody, or Rio → [Workflow](docs/workflows/chat-with-student.md)
+- **Preview app** - Run beyond-agents app in worktree for testing → [Workflow](docs/workflows/preview-app.md)
+- **PR management** - Auto-create and update pull requests → [Workflow](docs/workflows/pr-management.md)
 
 ### Fast Track
 - **Let it rip** - Skip planning and staging for simple tasks → [Workflow](docs/workflows/let-it-rip.md)
@@ -52,6 +56,7 @@ You are operating a centralized task management system that orchestrates Claude 
 | Approve task `<id>` | Complete + queue for merge | [→](docs/workflows/approve-task.md) |
 | Process merge queue | Merge next waiting task | [→](docs/workflows/merge-queue.md) |
 | Chat with `<student>` | Direct persona conversation | [→](docs/workflows/chat-with-student.md) |
+| Preview task `<id>` | Run app in worktree for testing | [→](docs/workflows/preview-app.md) |
 | Let it rip: `<repo>`: `<title>`. `<desc>` | Fast-track simple task | [→](docs/workflows/let-it-rip.md) |
 | List tasks | Display all tasks | (inline) |
 | Show task `<id>` | Display task details | (inline) |
@@ -174,9 +179,9 @@ clide/
 
 ```
 TODO → IN_PROGRESS (via assign)
-IN_PROGRESS → STAGING (via sub-agent success)
+IN_PROGRESS → STAGING (via sub-agent success → auto-create PR)
 IN_PROGRESS → FAILED (via sub-agent error)
-STAGING → STAGING (via refine - multiple cycles allowed)
+STAGING → STAGING (via refine - multiple cycles → auto-update PR)
 STAGING → COMPLETED (via approve)
 FAILED → TODO (via retry)
 ```
@@ -184,9 +189,14 @@ FAILED → TODO (via retry)
 **Status meanings:**
 - **TODO**: Ready to be assigned
 - **IN_PROGRESS**: Agent actively implementing
-- **STAGING**: Implementation complete, under PI review
+- **STAGING**: Implementation complete, PR created, under PI review (refinements update PR)
 - **COMPLETED**: Approved by PI, ready for merge
 - **FAILED**: Encountered errors during implementation
+
+**Automated PR Management:**
+- When task moves to **STAGING**: Automatically push branch and create PR with generated description
+- When task is **REFINED**: Automatically push commits and add comment to PR with refinement summary
+- PR URL is stored in task data and displayed in notifications
 
 ## Session Initialization
 

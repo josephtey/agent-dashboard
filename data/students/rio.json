@@ -84,6 +84,12 @@
         "decision": "Used navigate(-1) for back navigation instead of hardcoded route",
         "rationale": "More flexible - works if user navigates to stream from any page, not just homepage",
         "timestamp": "2026-02-05T15:30:00Z"
+      },
+      {
+        "task_id": 17,
+        "decision": "Configuration-only fix for SSL protocol error (no new dependencies)",
+        "rationale": "SSL issues are best solved through proper configuration (security headers, CSP, HSTS) rather than adding dependencies. Aligned with minimalism principle - leverages Vercel's built-in capabilities and web standards.",
+        "timestamp": "2026-02-14T03:17:00Z"
       }
     ],
     "learnings": [
@@ -170,10 +176,28 @@
         "learning": "PI strongly prefers minimal, scannable documentation. Reduced README from 538 to 146 lines (73% reduction) - removed verbose explanations, kept only essential info (what, how to install, basic usage).",
         "context": "Condensed Rosalind README per PI request ('readme is just too long'). This aligns with broader taste for minimalism seen across other projects.",
         "timestamp": "2026-02-14T09:00:00Z"
+      },
+      {
+        "task_id": 17,
+        "learning": "Vercel security headers configuration: Add headers via vercel.json (not middleware). Include HSTS (max-age=63072000, includeSubDomains, preload), X-Content-Type-Options (nosniff), X-Frame-Options (DENY), X-XSS-Protection, Referrer-Policy, and Permissions-Policy for comprehensive protection.",
+        "context": "Fixed SSL protocol error - proper security headers prevent protocol downgrades and common web vulnerabilities",
+        "timestamp": "2026-02-14T03:17:00Z"
+      },
+      {
+        "task_id": 17,
+        "learning": "Content Security Policy via meta tag: Use <meta http-equiv=\"Content-Security-Policy\" content=\"upgrade-insecure-requests\"> to automatically upgrade HTTP to HTTPS, preventing mixed content issues without blocking resources.",
+        "context": "CSP meta tag in index.html handles mixed content elegantly - no need to audit every resource URL",
+        "timestamp": "2026-02-14T03:17:00Z"
+      },
+      {
+        "task_id": 17,
+        "learning": "HSTS (Strict-Transport-Security) enforces HTTPS: max-age in seconds (2 years = 63072000), includeSubDomains protects all subdomains, preload enables Chrome's HSTS preload list. Critical for preventing SSL stripping attacks.",
+        "context": "HSTS header forces browsers to always use HTTPS for the domain, eliminating SSL protocol errors from HTTP fallback",
+        "timestamp": "2026-02-14T03:17:00Z"
       }
     ],
-    "project_state": "Built Rosalind SDK foundation (task 11). Cleaned up README to be much more scannable (task 13). Identified first workflow: attention head screening tool for protein-DNA interactions. Will process IS element clusters (transposase sequences from Gwanggyu's data) to find which shows strongest protein→DNA attention signals. Agent will rank clusters and identify most promising for studying transposase-TIR binding.",
-    "last_updated": "2026-02-14T09:05:00Z",
+    "project_state": "Built Rosalind SDK foundation (task 11). Cleaned up README to be much more scannable (task 13). Identified first workflow: attention head screening tool for protein-DNA interactions. Will process IS element clusters (transposase sequences from Gwanggyu's data) to find which shows strongest protein→DNA attention signals. Agent will rank clusters and identify most promising for studying transposase-TIR binding. On joetey.com side: Fixed SSL protocol error with comprehensive security headers (task 17).",
+    "last_updated": "2026-02-14T03:17:30Z",
     "conversations": [
       {
         "timestamp": "2026-02-13T00:30:00Z",
@@ -224,6 +248,12 @@
       "task_id": 13,
       "title": "Shorten Rosalind README",
       "completed_at": "2026-02-14T09:00:00Z",
+      "outcome": "success"
+    },
+    {
+      "task_id": 17,
+      "title": "Fix SSL Protocol Error",
+      "completed_at": "2026-02-14T03:17:30Z",
       "outcome": "success"
     }
   ]

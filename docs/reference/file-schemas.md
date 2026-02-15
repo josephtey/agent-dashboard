@@ -20,9 +20,11 @@
       "branch": null,
       "agent_id": null,
       "worktree_path": null,
+      "pr_url": null,
       "merge_status": null,
       "created_at": "2026-01-31T10:30:00Z",
       "assigned_at": null,
+      "staging_at": null,
       "completed_at": null,
       "error": null
     }
@@ -143,13 +145,33 @@
 }
 ```
 
+## Task Fields
+
+- **id**: Unique task identifier
+- **repo**: Repository name (from data/repos.json)
+- **repo_path**: Full path to repository
+- **spec_file**: Path to task specification markdown
+- **log_file**: Path to agent execution log
+- **title**: Human-readable task title
+- **status**: Current task status (see Status Descriptions below)
+- **branch**: Git branch name (null if not assigned)
+- **agent_id**: Sub-agent execution ID (for tracking/resuming)
+- **worktree_path**: Path to git worktree (null if not assigned)
+- **pr_url**: Pull request URL (auto-created when task moves to staging, null before staging)
+- **merge_status**: Status in merge queue (null, "waiting", "merged")
+- **created_at**: ISO timestamp when task was created
+- **assigned_at**: ISO timestamp when task was assigned (null if not assigned)
+- **staging_at**: ISO timestamp when task moved to staging (null if not staged)
+- **completed_at**: ISO timestamp when task was approved (null if not completed)
+- **error**: Error message if task failed (null if no error)
+
 ## State Transitions
 
 ```
 TODO → IN_PROGRESS (via assign command)
-IN_PROGRESS → STAGING (via sub-agent success)
+IN_PROGRESS → STAGING (via sub-agent success + auto PR creation)
 IN_PROGRESS → FAILED (via sub-agent error)
-STAGING → STAGING (via refine command - multiple refinement cycles)
+STAGING → STAGING (via refine command - multiple refinement cycles, auto PR updates)
 STAGING → COMPLETED (via approve command)
 FAILED → TODO (via retry command)
 ```
@@ -157,6 +179,6 @@ FAILED → TODO (via retry command)
 **Status Descriptions:**
 - **TODO**: Task is ready to be assigned to a student agent
 - **IN_PROGRESS**: Student agent is actively implementing the task
-- **STAGING**: Initial implementation complete, worktree active for PI review and refinements
+- **STAGING**: Initial implementation complete, PR auto-created, worktree active for PI review and refinements
 - **COMPLETED**: Task approved by PI, ready for merge
 - **FAILED**: Task encountered errors during implementation

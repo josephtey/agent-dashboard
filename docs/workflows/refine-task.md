@@ -35,8 +35,21 @@ Allows the PI to request refinements on tasks in "staging" status. The appropria
   - Add these as learnings to student context with clear rationale
   - Example: If PI said "remove the intro text", add learning: "PI prefers minimal UI without unnecessary introductory elements"
 - Update student context with any new decisions or learnings
+- **Update Pull Request:**
+  - Push refinement commits: `git push origin feature/task-{id}`
+  - Add comment to PR with refinement summary:
+    ```bash
+    gh pr comment {pr_number} --body "## Refinement: {refinement_title}
+
+    {refinement_description}
+
+    **Changes made:**
+    - {summary from agent log}
+
+    Committed and pushed."
+    ```
 - Task remains in "staging" status
-- Notify user: "Refinement completed for task {id}. Changes committed and pushed to feature/task-{id}. Test again or use 'Approve task {id}' when satisfied."
+- Notify user: "Refinement completed for task {id}. Changes committed and pushed. PR updated at {pr_url}. Test again or use 'Approve task {id}' when satisfied."
 
 ### 4. Multiple Refinement Cycles
 - Tasks can be refined multiple times before approval

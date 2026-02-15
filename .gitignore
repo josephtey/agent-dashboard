@@ -24,3 +24,4 @@ dashboard/.next/
 dashboard/.turbo/
 dashboard/out/
 dashboard/.env*.local
+.env

@@ -66,10 +66,136 @@
         "learning": "README Phase 4c has comprehensive agentic search architecture notes",
         "context": "Detailed notes on core tools needed (view_file, view_directory, grep_search, report_back), why full-text over embeddings, parallel execution importance, Reciprocal Rank Fusion for merging results, offline document augmentation. References to Relace AI and Ben Anderson blog posts. This is already well-researched - just need to implement.",
         "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "framer-motion + shadcn creates polished, minimal UI with smooth animations",
+        "context": "Used framer-motion's AnimatePresence and motion.div for message/event animations. Combined with Radix UI Collapsible primitive from shadcn for clean, accessible collapsible tool calls. Layout animations automatically handle reflows. Pattern: wrap in AnimatePresence, use motion.div with initial/animate/exit props, add 'layout' prop for position transitions.",
+        "timestamp": "2026-02-14T13:08:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "Collapsing tool calls by default drastically improves chat UX",
+        "context": "Tool calls showing full JSON by default cluttered the UI. Created CollapsibleToolCall component that shows only tool name collapsed, expandable on click. Used ChevronRight icon that rotates 90° on expand. This pattern should be applied to any verbose content in chat interfaces.",
+        "timestamp": "2026-02-14T13:08:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "ScrollArea viewport needs explicit targeting for contained scrolling",
+        "context": "scrollIntoView() caused whole-page scroll. Fix: target ScrollArea viewport using querySelector('[data-slot=viewport]') and manipulate scrollTop directly. Also add explicit height constraints (h-[calc(100vh-200px)]) to container. This ensures scroll stays within component.",
+        "timestamp": "2026-02-14T13:08:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "Use h-screen overflow-hidden on main + flex-1 min-h-0 on scroll container for sticky input layout",
+        "context": "Refinement: h-[calc(100vh-200px)] was fragile and didn't properly contain scrolling. Correct pattern: main uses h-screen overflow-hidden, header and input use shrink-0, chat container uses flex-1 min-h-0. This guarantees input stays pinned at bottom and scroll is contained.",
+        "timestamp": "2026-02-14T14:00:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "PI wants human-readable tool labels, not raw tool names - hide technical details from users",
+        "context": "Refinement: raw tool names like 'web_search' and 'read_file' felt too techy. PI wants human-friendly labels like 'Searching the web...' with loading states that update to 'Searched the web' when done. Use a TOOL_LABELS mapping with loading/done pairs and a generic humanizer fallback.",
+        "timestamp": "2026-02-14T14:00:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "PI wants tool call and result merged into one component, not separate boxes",
+        "context": "Refinement: ToolCallEvent and ToolResultEvent were rendering as separate CollapsibleToolCall components. PI finds this cluttered. Correct pattern: pre-process events to pair tool calls with their results, render as single component with loading→done state transition. Show spinner while loading, checkmark when complete, result inside same collapsible.",
+        "timestamp": "2026-02-14T14:00:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "requestAnimationFrame needed for reliable auto-scroll after React state updates",
+        "context": "Refinement: scrollTop assignment was firing before DOM updated, causing scroll-to-top instead of scroll-to-bottom. Wrapping in requestAnimationFrame gives the browser time to render new content before scrolling. Also need to watch event count changes, not just message count.",
+        "timestamp": "2026-02-14T14:00:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "Auto-focus input after send improves conversation flow",
+        "context": "Added useRef to input element, call inputRef.current?.focus() after sending message. Small detail but makes continuous conversation feel seamless - user can immediately start typing next message without clicking back into input.",
+        "timestamp": "2026-02-14T13:08:00Z"
+      },
+      {
+        "task_id": 18,
+        "learning": "Professional UI = remove emojis, use neutral shadcn colors, minimal animations",
+        "context": "Removed all emojis (🛠️, ✅, 💭) and bright backgrounds (bg-blue-50, bg-green-50). Replaced with shadcn semantic colors (bg-muted, border-border, text-muted-foreground). Used Loader2 spinner instead of thinking emoji. Result: clean, professional aesthetic that scales well.",
+        "timestamp": "2026-02-14T13:08:00Z"
+      },
+      {
+        "task_id": 19,
+        "learning": "asyncio.to_thread() pattern for blocking I/O in async tools is production-ready",
+        "context": "Implemented list_directory and grep_search following read_file pattern. Using asyncio.to_thread() for file operations (os.walk, file.read, regex matching) keeps the event loop responsive. This pattern scales well for I/O-bound operations without introducing multiprocessing complexity.",
+        "timestamp": "2026-02-14T13:41:00Z"
+      },
+      {
+        "task_id": 19,
+        "learning": "gitignore-parser library cleanly integrates with pathlib for respecting .gitignore",
+        "context": "Used gitignore_parser.parse_gitignore() to load rules, then matcher(path) for filtering. Integrates seamlessly with pathlib.Path.rglob() and os.walk(). This prevents search tools from exposing .git/, node_modules/, __pycache__, etc. Clean separation of concerns.",
+        "timestamp": "2026-02-14T13:41:00Z"
+      },
+      {
+        "task_id": 19,
+        "learning": "Tree-formatted output with line counts provides excellent agent context",
+        "context": "list_directory shows directory structure with box-drawing characters (├──, └──) and line counts per file. This visual format helps the agent quickly understand codebase structure without reading every file. Format: 'filename (N lines)' for files, 'dirname/' for directories.",
+        "timestamp": "2026-02-14T13:41:00Z"
+      },
+      {
+        "task_id": 19,
+        "learning": "Grep context lines (before/after) dramatically improve code search results",
+        "context": "grep_search shows 2 lines of context by default (configurable). This provides surrounding code for each match, making results immediately useful without requiring read_file. Pattern: show line numbers, indent context, use --- separator between match groups. Truncate lines >200 chars to prevent pollution.",
+        "timestamp": "2026-02-14T13:41:00Z"
+      },
+      {
+        "task_id": 19,
+        "learning": "Composable tool design (list → grep → read) enables agent autonomy",
+        "context": "Three separate tools (list_directory, grep_search, read_file) compose naturally. Agent can explore structure, search for patterns, then read full files. This matches the 'agentic search for dummies' philosophy: separate search from read, let agent drive discovery iteratively. Sequential execution is acceptable for MVP; parallel comes in Phase 2.",
+        "timestamp": "2026-02-14T13:41:00Z"
+      },
+      {
+        "task_id": 19,
+        "learning": "Binary file detection via null bytes prevents garbage output",
+        "context": "Check for b'\\0' in first 8KB of file before processing. Binary files (images, PDFs, compiled code) would produce garbage in grep results. Simple check: if null byte detected, skip file. This pattern should be applied to all text-processing tools.",
+        "timestamp": "2026-02-14T13:41:00Z"
+      },
+      {
+        "task_id": 19,
+        "learning": "Unit tests + integration tests + manual testing = comprehensive verification",
+        "context": "Created test_tools.py for unit tests (individual tool behavior), test_integration.py for workflow testing (chained tool calls), and AGENTIC_SEARCH_TESTS.md for manual verification prompts. This three-tier approach catches bugs at different levels: implementation, integration, and UX.",
+        "timestamp": "2026-02-14T13:41:00Z"
+      },
+      {
+        "task_id": 5,
+        "learning": "Three-phase execution pattern (emit calls → parallel gather → emit results) achieves performance + clean UI",
+        "context": "Replaced sequential tool loop with: Phase 1 emit all ToolCallEvents, Phase 2 asyncio.gather(*tasks), Phase 3 emit all ToolResultEvents. This gives user immediate feedback on intent, runs tools concurrently, and maintains result ordering. SSE streaming transparently handles the pattern.",
+        "timestamp": "2026-02-14T13:40:00Z"
+      },
+      {
+        "task_id": 5,
+        "learning": "asyncio.gather with return_exceptions=True enables graceful degradation",
+        "context": "Using return_exceptions=True means one tool failure doesn't cancel others. Check isinstance(result, Exception) and convert to error string. This preserves partial results and maintains conversation flow even when individual tools fail.",
+        "timestamp": "2026-02-14T13:40:00Z"
+      },
+      {
+        "task_id": 5,
+        "learning": "Result ordering via zip() maintains API contract while enabling parallelism",
+        "context": "zip(response.tool_uses, results) ensures results match original tool_use order even when tools complete out of order. Critical for API correctness - Anthropic expects tool_result order to match tool_use order. Simple pattern that solves complex coordination problem.",
+        "timestamp": "2026-02-14T13:40:00Z"
+      },
+      {
+        "task_id": 5,
+        "learning": "Comprehensive test suite catches timing, ordering, and error edge cases",
+        "context": "Created 6 tests covering: timing validation (3x speedup), event ordering (plan→execute→report), error handling (partial results), single tool case, result ordering, unknown tools. All passing. This level of coverage gives confidence in parallel execution correctness.",
+        "timestamp": "2026-02-14T13:40:00Z"
+      },
+      {
+        "task_id": 5,
+        "learning": "Parallel tool execution is transparent to SSE streaming architecture",
+        "context": "No changes needed to FastAPI backend or Next.js frontend. Agent yields events in correct order, FastAPI streams them, frontend displays them. The parallelism happens internally in agent.py between event emissions. Clean separation of concerns.",
+        "timestamp": "2026-02-14T13:40:00Z"
       }
     ],
-    "project_state": "Built full-stack web interface for beyond-agents with FastAPI backend + Next.js frontend. Agent now accessible via browser at localhost:3000 with real-time streaming. Architecture: FastAPI serves persistent agent (3-5x faster than subprocess), Next.js provides clean chat UI with SSE streaming. All core agent code remains unchanged. Next: refine UI with shadcn, markdown support, and token-by-token streaming.",
-    "last_updated": "2026-02-13T00:30:00Z",
+    "project_state": "Messaging UI (task 18) approved and merged. Key refinements: sticky input, scroll-to-top, human-readable tool labels, merged tool call+result, token streaming (partial - real-time Anthropic streaming piped through, but TCP buffering still collapses tokens). Parallel tool calling (task 5) in staging. Agentic file search (task 19) in staging.",
+    "last_updated": "2026-02-14T15:30:00Z",
     "conversations": [
       {
         "timestamp": "2026-02-01T20:05:00Z",
@@ -107,6 +233,34 @@
       "title": "Convert CLI to Full-Stack Next.js App (V1)",
       "completed_at": "2026-02-13T00:30:00Z",
       "outcome": "success"
+    },
+    {
+      "task_id": 18,
+      "title": "Clean Up Messaging UI",
+      "completed_at": "2026-02-14T15:30:00Z",
+      "outcome": "success",
+      "refinements": [
+        "Sticky input at bottom (h-screen overflow-hidden layout)",
+        "Scroll-to-top on new message with smooth animation + 40px header padding",
+        "Human-readable tool labels with loading/done states",
+        "Merged tool call + result into single collapsible component",
+        "Token-by-token streaming from Anthropic API (real-time deltas, ClearStreamEvent for thinking text)",
+        "Removed ThinkingEvent spinner between tool calls",
+        "18 Playwright tests covering all features"
+      ]
+    },
+    {
+      "task_id": 19,
+      "title": "Agentic File Search - Phase 1 MVP",
+      "completed_at": "2026-02-14T13:41:00Z",
+      "outcome": "success"
+    },
+    {
+      "task_id": 5,
+      "title": "Implement Parallel Tool Calling",
+      "status": "staging",
+      "assigned_at": "2026-02-14T13:35:00Z",
+      "staging_at": "2026-02-14T13:40:00Z"
     }
   ]
 }
