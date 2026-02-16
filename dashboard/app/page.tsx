@@ -37,6 +37,7 @@ export default function Dashboard() {
   const [repositories, setRepositories] = useState<Repository[]>([])
   const [worktrees, setWorktrees] = useState<Worktree[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set())
 
   // Fetch repositories
   useEffect(() => {
@@ -454,29 +455,44 @@ export default function Dashboard() {
             <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">To Do</h2>
             <div className="bg-white dark:bg-card rounded-lg border border-slate-200 dark:border-slate-700 p-5">
               <div className="space-y-2">
-                {groupedTasks.todo.slice(0, 5).map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-start gap-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-2 rounded transition-colors group"
-                  >
-                    <input
-                      type="checkbox"
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 cursor-pointer hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
-                      onChange={() => setSelectedTask(task)}
-                    />
+                {groupedTasks.todo.slice(0, 5).map((task) => {
+                  const itemKey = `plan-${task.id}`
+                  const isChecked = checkedItems.has(itemKey)
+                  return (
                     <div
-                      className="flex-1 min-w-0 cursor-pointer"
-                      onClick={() => setSelectedTask(task)}
+                      key={task.id}
+                      className="flex items-start gap-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-2 rounded transition-colors group"
                     >
-                      <p className="text-sm text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200">
-                        Plan task #{task.id}: {task.title}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        {task.repo}
-                      </p>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 cursor-pointer hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
+                        onChange={() => {
+                          setCheckedItems(prev => {
+                            const newSet = new Set(prev)
+                            if (newSet.has(itemKey)) {
+                              newSet.delete(itemKey)
+                            } else {
+                              newSet.add(itemKey)
+                            }
+                            return newSet
+                          })
+                        }}
+                      />
+                      <div
+                        className="flex-1 min-w-0 cursor-pointer"
+                        onClick={() => setSelectedTask(task)}
+                      >
+                        <p className={`text-sm text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-all ${isChecked ? 'line-through opacity-50' : ''}`}>
+                          Plan task #{task.id}: {task.title}
+                        </p>
+                        <p className={`text-xs text-slate-500 dark:text-slate-400 mt-0.5 transition-all ${isChecked ? 'line-through opacity-50' : ''}`}>
+                          {task.repo}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
 
                 {groupedTasks.todo.length > 5 && (
                   <div className="flex items-start gap-3 py-2 -mx-2 px-2">
@@ -487,46 +503,60 @@ export default function Dashboard() {
                   </div>
                 )}
 
-                {groupedTasks.staging.map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-start gap-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-2 rounded transition-colors group"
-                  >
-                    <input
-                      type="checkbox"
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 cursor-pointer hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
-                      onChange={() => {
-                        if (task.pr_url) {
-                          window.open(task.pr_url, '_blank', 'noopener,noreferrer')
-                        }
-                      }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200">
-                        Review PR for task #{task.id}: {task.title}
-                      </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {task.repo}
+                {groupedTasks.staging.map((task) => {
+                  const itemKey = `review-${task.id}`
+                  const isChecked = checkedItems.has(itemKey)
+                  return (
+                    <div
+                      key={task.id}
+                      className="flex items-start gap-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-2 rounded transition-colors group"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 cursor-pointer hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
+                        onChange={() => {
+                          setCheckedItems(prev => {
+                            const newSet = new Set(prev)
+                            if (newSet.has(itemKey)) {
+                              newSet.delete(itemKey)
+                            } else {
+                              newSet.add(itemKey)
+                            }
+                            return newSet
+                          })
+                          if (task.pr_url && !isChecked) {
+                            window.open(task.pr_url, '_blank', 'noopener,noreferrer')
+                          }
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-all ${isChecked ? 'line-through opacity-50' : ''}`}>
+                          Review PR for task #{task.id}: {task.title}
                         </p>
-                        {task.pr_url && (
-                          <>
-                            <span className="text-xs text-slate-400 dark:text-slate-600">•</span>
-                            <a
-                              href={task.pr_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              View PR
-                            </a>
-                          </>
-                        )}
+                        <div className={`flex items-center gap-2 mt-0.5 transition-all ${isChecked ? 'line-through opacity-50' : ''}`}>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {task.repo}
+                          </p>
+                          {task.pr_url && (
+                            <>
+                              <span className="text-xs text-slate-400 dark:text-slate-600">•</span>
+                              <a
+                                href={task.pr_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                View PR
+                              </a>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           </div>
