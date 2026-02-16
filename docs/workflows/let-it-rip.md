@@ -84,23 +84,45 @@ Fast-track mode for simple, straightforward tasks that don't require planning or
   - Instruction to implement, test, commit, and push
   - Note that this is a fast-track task (simple and straightforward)
 
-### 6. Auto-Progression on Success
-**If agent succeeds:**
-- Update status to "staging"
-- Immediately update status to "completed"
-- Add to merge queue with status "waiting"
-- Set merge_status to "waiting"
-- Cleanup worktree
-- Process merge queue automatically
+### 6. Run Automated Tests
+**After agent completes implementation:**
+- If frontend/web app:
+  1. Start dev server
+  2. Create small Playwright test suite
+  3. Run tests and capture results
+  4. Stop dev server
+- If backend/CLI:
+  1. Run existing test suite if available
+  2. Or create simple integration test
+- Capture test results
 
-**If agent fails:**
+### 7. Auto-Progression Based on Test Results
+
+**If tests pass:**
+- Push branch to remote
+- Create PR with test results in description
+- Merge PR immediately: `gh pr merge {pr_number} --squash --delete-branch`
+- Update status to "completed"
+- Set merge_status to "merged"
+- Cleanup worktree
+- Notify user: "Task {id} completed and merged via fast-track! Tests passed. Merged to main."
+
+**If tests fail:**
+- Push branch to remote
+- Create PR with failed test results
+- Move to "staging" status (do NOT auto-merge)
+- Keep worktree active
+- Notify user: "Task {id} moved to staging. ⚠️ Automated tests failed - review needed. PR at {pr_url}. Use 'Refine task {id}' to fix."
+
+**If implementation fails:**
 - Update status to "failed"
 - Cleanup worktree
 - Report error to user
 
-### 7. Notify User
-- **On success**: "Task {id} completed and merged via fast-track! Branch feature/task-{id} merged to main."
-- **On failure**: "Fast-track task {id} failed. Error: {error}. Use 'Retry task {id}' or create a proper task for this."
+### 8. Update Student Context
+- Extract learnings and decisions from agent log
+- Update student's context file even for fast-track tasks
+- Keep context accumulation consistent
 
 ## Example
 
@@ -111,20 +133,36 @@ Claude:
 1. Creates task #15 with minimal spec
 2. Assigns to Rio (joetey.com owner)
 3. Spawns agent to fix typo
-4. Agent commits and pushes
-5. Auto-approves and merges
-6. "Task 15 completed and merged via fast-track!"
+4. Agent commits changes
+5. Runs automated tests (if applicable)
+6. Tests pass → Creates PR → Auto-merges
+7. "Task 15 completed and merged via fast-track! Tests passed. Merged to main."
 
-Total time: ~30 seconds instead of ~5 minutes with full workflow
+Total time: ~45 seconds instead of ~5 minutes with full workflow
+```
+
+```
+User: Let it rip: beyond-agents: Add loading spinner to search button
+
+Claude:
+1. Creates task #20
+2. Assigns to Woody (beyond-agents owner)
+3. Agent implements spinner
+4. Starts dev server and runs Playwright tests
+5. Tests fail (spinner not visible) → Moves to staging instead of merging
+6. "Task 20 moved to staging. ⚠️ Tests failed - review needed. PR at {url}"
+7. User can refine or check the PR to see what went wrong
 ```
 
 ## Important Notes
 
 - Skip plan mode entirely - trust the user's description
-- Skip staging/review - merge directly on success
+- **Automated tests are run before merging** - ensures quality even in fast-track
+- Merge directly only if tests pass - otherwise moves to staging for review
 - Only for tasks where you're confident of the approach
 - If in doubt, use regular "Create task" with planning instead
 - Update student context even for fast-track tasks
+- PR is always created (with test results) even for successful fast-track merges
 
 ## Error Handling
 

@@ -22,6 +22,24 @@
         "decision": "Use full-text search (Tantivy) over vector embeddings for codebase search",
         "rationale": "Full-text search provides predictable, interpretable results. Dense embeddings struggle with long documents, require chunking that destroys structure, and demand separate transformer infrastructure. The README research backs this approach.",
         "timestamp": "2026-02-01T20:15:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Refactor beyond-agents with Linus Lee's four principles: Composability, Observability, Statelessness, Changeability",
+        "rationale": "Current architecture is a monolithic agent loop with limited observability, immediate side effects, and mixed concerns. This doesn't scale. Linus's Puck system (11-minute runs, 400+ model calls, fully debuggable) shows that task-based composition, adapter-layer logging, pure functional core, and layered architecture enable operational scale + engineering simplicity. Engineering is programming integrated over time - build right primitives now or fight architecture forever.",
+        "timestamp": "2026-02-14T20:45:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Pause feature sprint to invest in architectural primitives",
+        "rationale": "Currently racing through features (parallel tools, agentic search, memory) without proper abstractions. The 'maximize tokens' mentality (more context = better results, more tools = more capable) is a trap - it's hoping, not engineering. If we believe craft matters, we need to build composable tasks, adapter layers, effect stores, and layered stacks. More capable models make principled engineering MORE important, not less. This is about identity: are we engineers or prompt jockeys?",
+        "timestamp": "2026-02-14T20:45:00Z"
+      },
+      {
+        "task_id": null,
+        "decision": "Reject 'maximize tokens' mentality in favor of classic engineering values",
+        "rationale": "The dominant narrative is 'scale is all you need' - throw more inference at problems, models will get better, architecture doesn't matter. But if AGI is coming, why are we building? The answer: craft matters. We're engineers. Classic values (understandability, debuggability, composition, testability, architecture) matter MORE in the AI era because more capable models → more complex behaviors → harder to debug. Aesthetics come from principled architecture, not just UI polish.",
+        "timestamp": "2026-02-14T20:45:00Z"
       }
     ],
     "learnings": [
@@ -192,10 +210,70 @@
         "learning": "Parallel tool execution is transparent to SSE streaming architecture",
         "context": "No changes needed to FastAPI backend or Next.js frontend. Agent yields events in correct order, FastAPI streams them, frontend displays them. The parallelism happens internally in agent.py between event emissions. Clean separation of concerns.",
         "timestamp": "2026-02-14T13:40:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Polymer framework: task-based composition over monolithic agents",
+        "context": "Linus Lee's framework at Thrive Capital. Define tasks (not quite tools, not quite agents) with typed inputs/outputs. Compose tasks like Lego blocks into higher-level workflows. Agent orchestrates tasks, not raw tools. Example: research_company task → gather_context task → answer_question task. Avoids monolithic agent where anything can call any tool (like goto statements). Enables reuse, clear interfaces, understandable flows.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Adapter layer enables fully replayable logs for root-cause analysis",
+        "context": "Puck logs complete payloads + responses for every model call at narrow adapter boundary. Production failure? Click thumbs-down → get request ID → see full trace → find exact completion where error occurred → add to eval suite. This loop (production example → reproduce → fix → add to evals) is critical for moving fast without regressions. Beyond-agents has no persistence, no replay capability - can't debug production issues.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Pure functional core with effect store: actions as data, not verbs",
+        "context": "Agent pipeline is pure function (input → output). Side effects (emails, saves, alerts) go into effect store as JSON payloads - they're 'nouns', not 'verbs'. Caller decides whether to execute. Benefits: models can review/rank actions, persist for human approval, simpler eval environments (no live APIs needed). Beyond-agents executes effects immediately (web_search hits API), can't review before acting.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Layered architecture by rate of change enables evolution without breakage",
+        "context": "Three layers in Puck: Core APIs (slowest - task system, adapters, runtime), Lower-level tasks (medium - entity_resolution, answer_generation), Product surfaces (fastest - interactive chat, background jobs). When vendor APIs change, doesn't affect product. When product needs new feature, doesn't affect core. Beyond-agents is one layer - model API, task logic, UI concerns all mixed.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Engineering is programming integrated over time - sustainability matters",
+        "context": "Google SRE book definition. Not just making it work now, but making it sustainable, able to react to change over lifecycle. For beyond-agents: can we root cause every issue? Add new capabilities without regression? Reuse components across products? If we don't build right primitives now, we'll fight architecture forever. More time fixing than building.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "More capable models make principled engineering MORE important, not less",
+        "context": "Counter to 'scale is all you need' narrative. Why? More capable models → more complex behaviors → harder to debug. Longer runs → more failure modes → need better observability. More tools → combinatorial explosion → need composition primitives. More autonomy → higher stakes → need testability and safety. The better models get, the more we need good engineering.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Identity matters: engineers vs prompt jockeys",
+        "context": "Are we just writing prompts and hoping models figure it out? Or designing abstractions and building composable systems? 'Maximize tokens' mentality (more context, more tools, longer runs) isn't engineering - it's hoping. Real engineering: understandability (clear composition), debuggability (replay failures), architecture (right abstractions), testability (500 test cases, not vibes). If we believe craft matters, we're engineers.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "Aesthetics come from principled architecture, not just UI polish",
+        "context": "Puck runs 11 minutes, 400+ model calls, fully autonomous, fully debuggable - that's beautiful. Aesthetics = clarity (readable task composition), debuggability (full replay), extensibility (add without breaking), reliability (pure functions, testable). 'Fucking sexy and good' means architecturally sound, not just smooth animations. Build things that are understandable, maintainable, and compound over time.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "The 'maximize tokens' trap: hoping vs engineering",
+        "context": "Pervasive vibe: more context = better results, more tools = more capable, longer runs = smarter, more inference = solved. This kind of works (brute force with Opus + 200K context + 50 tools + 20 minutes), but it's not engineering. It's hoping. We're not building systems we understand, we're scaling inference and praying. When something breaks, we can't debug - just 'run it again with more tokens'. This doesn't compound, it accumulates tech debt.",
+        "timestamp": "2026-02-14T20:30:00Z"
+      },
+      {
+        "task_id": null,
+        "learning": "AGI pill paradox: if AGI solves everything, why build anything?",
+        "context": "If you believe (1) AGI is 18 months away, (2) models will get so good architecture doesn't matter, (3) just scale inference and wait - then why are we building agent harnesses? Why think about primitives? The answer: we don't actually believe that, or we believe something more important: craft matters. We're here to build well, not to wait. The act of designing and reasoning about complex systems matters, regardless of AGI timelines.",
+        "timestamp": "2026-02-14T20:30:00Z"
       }
     ],
-    "project_state": "Messaging UI (task 18) approved and merged. Key refinements: sticky input, scroll-to-top, human-readable tool labels, merged tool call+result, token streaming (partial - real-time Anthropic streaming piped through, but TCP buffering still collapses tokens). Parallel tool calling (task 5) in staging. Agentic file search (task 19) in staging.",
-    "last_updated": "2026-02-14T15:30:00Z",
+    "project_state": "Critical architectural pivot: After analyzing Linus Lee's 'Agents as Ordinary Software' talk, decided to pause feature sprint and refactor beyond-agents with four core principles: Composability (task abstraction), Observability (adapter layer with fully replayable logs), Statelessness (pure functional core with effect store), Changeability (layered architecture by rate of change). Rejecting 'maximize tokens' mentality in favor of principled engineering. Tasks 5, 18, 19 completed but architecture needs foundational rebuild.",
+    "last_updated": "2026-02-14T20:55:00Z",
     "conversations": [
       {
         "timestamp": "2026-02-01T20:05:00Z",
@@ -223,6 +301,43 @@
           "Search → Filter → Report workflow keeps context clean",
           "Full-text search preferred over embeddings for predictability",
           "README already has comprehensive agentic search research documented"
+        ]
+      },
+      {
+        "timestamp": "2026-02-14T20:30:00Z",
+        "duration_minutes": 25,
+        "summary": "Discussed Linus Lee's 'Agents as Ordinary Software' talk from Thrive Capital about building Puck. Analyzed four core principles: Composability (task-based composition), Observability (fully replayable logs), Statelessness (pure functional core with effect store), Changeability (layered architecture). Confronted 'maximize tokens' mentality vs classic engineering values. Discussed AGI pill paradox and identity as engineers vs prompt jockeys. Decided to shift beyond-agents from feature sprint to architectural refactor based on these principles.",
+        "key_topics": [
+          "Linus Lee's Polymer framework and Puck system",
+          "Four engineering values: Composability, Observability, Statelessness, Changeability",
+          "Maximize tokens trap vs principled engineering",
+          "AGI pill paradox - if AGI is coming, why build?",
+          "Classic software engineering values matter MORE in AI era",
+          "Identity as engineers vs prompt jockeys",
+          "Beyond-agents architectural assessment",
+          "Engineering that compounds vs unmaintainable messes"
+        ],
+        "action_items": [
+          "Watch Linus Lee talk tomorrow (on car ride to temple)",
+          "Pause feature sprint (memory, agentic search expansion)",
+          "Design task abstraction system with typed inputs/outputs for beyond-agents",
+          "Build adapter layer for full observability and replay capability",
+          "Implement pure functional core with effect store (defer side effects)",
+          "Layer the stack by rate of change (Core APIs, Lower-level tasks, Product surfaces)",
+          "Keep working with Clide to get used to agent-first engineering",
+          "Keep the mind engaged - stay sharp, don't get lazy"
+        ],
+        "new_learnings": [
+          "Polymer framework: compose complex systems from task primitives with typed inputs/outputs",
+          "Fully replayable logs via adapter layer enable root-cause analysis from single production examples",
+          "Pure functional core with effect store: actions as data (nouns), not execution (verbs)",
+          "Layered architecture: Core APIs (slowest change) → Lower-level tasks (medium) → Product surfaces (fastest)",
+          "Engineering is programming integrated over time - sustainability and changeability matter",
+          "More capable models make principled engineering MORE important, not less",
+          "Identity matters: engineers build composable systems, prompt jockeys hope models figure it out",
+          "Aesthetics come from architecture: clarity, debuggability, extensibility, reliability",
+          "Maximize tokens is a trap - more context/tools/inference is hoping, not engineering",
+          "AGI pill paradox: if AGI solves everything, why build? Answer: craft matters"
         ]
       }
     ]
@@ -258,9 +373,8 @@
     {
       "task_id": 5,
       "title": "Implement Parallel Tool Calling",
-      "status": "staging",
-      "assigned_at": "2026-02-14T13:35:00Z",
-      "staging_at": "2026-02-14T13:40:00Z"
+      "completed_at": "2026-02-15T06:15:00Z",
+      "outcome": "success"
     }
   ]
 }

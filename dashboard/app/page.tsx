@@ -6,7 +6,6 @@ import { KanbanBoard } from '@/components/kanban-board'
 import { LogViewer } from '@/components/log-viewer'
 import { StudentViewer } from '@/components/student-viewer'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { ProductivityTracker } from '@/components/productivity-tracker'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -142,8 +141,9 @@ export default function Dashboard() {
                 <DialogTitle>About Clide</DialogTitle>
               </DialogHeader>
               <Tabs defaultValue="philosophy" className="mt-4">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="philosophy">Philosophy</TabsTrigger>
+                  <TabsTrigger value="structure">How It Works</TabsTrigger>
                   <TabsTrigger value="vision">Future Vision</TabsTrigger>
                 </TabsList>
                 <TabsContent value="philosophy" className="space-y-4 text-left mt-4">
@@ -162,6 +162,105 @@ export default function Dashboard() {
                   <p className="text-base text-foreground leading-relaxed">
                     This isn't just about shipping faster — it's about becoming a better builder, faster. Your agents do the grunt work. You accumulate the wisdom. <strong>Now everyone can become a professor.</strong>
                   </p>
+                </TabsContent>
+                <TabsContent value="structure" className="space-y-4 text-left mt-4">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-2">Task Lifecycle</h3>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Tasks move through five stages. Each stage has specific actions you can take.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 border-l-2 border-slate-200 dark:border-slate-700 pl-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 rounded-full bg-slate-400"></div>
+                          <span className="text-sm font-medium">TODO</span>
+                          <span className="text-xs text-muted-foreground">→ Ready to assign</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Task created with minimal spec. Contains description and repo.
+                        </p>
+                        <p className="text-xs font-mono text-muted-foreground mt-1">
+                          Command: <span className="text-foreground">Assign task {'{id}'}</span>
+                        </p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                          </div>
+                          <span className="text-sm font-medium">IN PROGRESS</span>
+                          <span className="text-xs text-muted-foreground">→ Agent implementing</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Student agent has created worktree and is actively coding. Watch the log viewer for real-time updates.
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          • Worktree isolated on branch feature/task-{'{id}'}
+                          <br />
+                          • Agent writes to tasks/{'{id}'}/agent.log
+                        </p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
+                          <span className="text-sm font-medium">STAGING</span>
+                          <span className="text-xs text-muted-foreground">→ Ready for review</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Implementation complete. PR automatically created. Time to review code and test.
+                        </p>
+                        <p className="text-xs font-mono text-muted-foreground mt-1">
+                          Commands:
+                          <br />
+                          • <span className="text-foreground">Refine task {'{id}'}: {'{description}'}</span> — Request changes
+                          <br />
+                          • <span className="text-foreground">Approve task {'{id}'}</span> — Merge to main
+                        </p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                          <span className="text-sm font-medium">COMPLETED</span>
+                          <span className="text-xs text-muted-foreground">→ Merged to main</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          PR merged via squash commit. Branch deleted. Worktree cleaned up. Changes live in main.
+                        </p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 rounded-full bg-red-500"></div>
+                          <span className="text-sm font-medium">FAILED</span>
+                          <span className="text-xs text-muted-foreground">→ Encountered errors</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Agent hit an error during implementation. Check logs for details.
+                        </p>
+                        <p className="text-xs font-mono text-muted-foreground mt-1">
+                          Command: <span className="text-foreground">Retry task {'{id}'}</span> — Reset to TODO
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                      <h3 className="text-sm font-semibold text-foreground mb-2">Key Points</h3>
+                      <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                        <li>PRs are automatically created when tasks reach staging</li>
+                        <li>Approving a task merges it immediately (no separate merge step)</li>
+                        <li>You can refine tasks multiple times before approving</li>
+                        <li>Each refinement adds a commit and updates the PR</li>
+                        <li>Worktrees stay active during staging for refinements</li>
+                      </ul>
+                    </div>
+                  </div>
                 </TabsContent>
                 <TabsContent value="vision" className="space-y-4 text-left mt-4">
                   <p className="text-sm text-muted-foreground mb-4">
@@ -349,9 +448,89 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="mb-6">
-          <ProductivityTracker tasks={tasks} />
-        </div>
+        {/* TODO List */}
+        {(groupedTasks.todo.length > 0 || groupedTasks.staging.length > 0) && (
+          <div className="mb-6">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">To Do</h2>
+            <div className="bg-white dark:bg-card rounded-lg border border-slate-200 dark:border-slate-700 p-5">
+              <div className="space-y-2">
+                {groupedTasks.todo.slice(0, 5).map((task) => (
+                  <div
+                    key={task.id}
+                    className="flex items-start gap-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-2 rounded transition-colors group"
+                  >
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 cursor-pointer hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
+                      onChange={() => setSelectedTask(task)}
+                    />
+                    <div
+                      className="flex-1 min-w-0 cursor-pointer"
+                      onClick={() => setSelectedTask(task)}
+                    >
+                      <p className="text-sm text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200">
+                        Plan task #{task.id}: {task.title}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        {task.repo}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+
+                {groupedTasks.todo.length > 5 && (
+                  <div className="flex items-start gap-3 py-2 -mx-2 px-2">
+                    <div className="h-4 w-4" />
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      +{groupedTasks.todo.length - 5} more tasks to plan
+                    </p>
+                  </div>
+                )}
+
+                {groupedTasks.staging.map((task) => (
+                  <div
+                    key={task.id}
+                    className="flex items-start gap-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-2 rounded transition-colors group"
+                  >
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 cursor-pointer hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
+                      onChange={() => {
+                        if (task.pr_url) {
+                          window.open(task.pr_url, '_blank', 'noopener,noreferrer')
+                        }
+                      }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200">
+                        Review PR for task #{task.id}: {task.title}
+                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {task.repo}
+                        </p>
+                        {task.pr_url && (
+                          <>
+                            <span className="text-xs text-slate-400 dark:text-slate-600">•</span>
+                            <a
+                              href={task.pr_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              View PR
+                            </a>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         <KanbanBoard
           tasks={groupedTasks}

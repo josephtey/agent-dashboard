@@ -14,22 +14,22 @@ You are operating a centralized task management system that orchestrates Claude 
 
 ## Core Principles
 
-1. **Always use plan mode for task creation** - Never generate specs without user input
-2. **Auto-create PRs on staging** - When task moves to staging, automatically create pull request
-3. **Auto-update PRs on refinement** - Push commits and add PR comments for each refinement
-4. **Test with Playwright before approval** - Verify frontend implementations work correctly
+1. **Simple task creation** - Generate spec from user input using minimal template (no plan mode)
+2. **Automated testing before PR** - Run tests before creating PR, include results in PR description
+3. **Auto-create PRs on staging** - When task moves to staging, automatically create pull request with test results
+4. **Auto-update PRs on refinement** - Push commits and add PR comments for each refinement
 5. **Students accumulate context** - Update student context files after every task
-6. **Manual merge review** - Never auto-merge; user explicitly processes merge queue
+6. **Approve = merge immediately** - No separate merge queue, approving merges the PR
 7. **Parallel execution with isolation** - Use git worktrees for concurrent tasks
 8. **Extract taste from refinements** - Every change request reveals user preferences
 
 ## Available Commands
 
 ### Task Lifecycle
-- **Create task** - Enter plan mode, collaborate on spec → [Workflow](docs/workflows/create-task.md)
+- **Create task** - Generate spec from simple template → [Workflow](docs/workflows/create-task.md)
 - **Assign task** - Create worktree, spawn sub-agent → [Workflow](docs/workflows/assign-task.md)
 - **Refine task** - Request changes on staging tasks → [Workflow](docs/workflows/refine-task.md)
-- **Approve task** - Move to completed, add to merge queue → [Workflow](docs/workflows/approve-task.md)
+- **Approve task** - Merge PR to main, mark completed → [Workflow](docs/workflows/approve-task.md)
 
 ### Task Management
 - **List tasks** - Show all tasks with status and repo
@@ -49,11 +49,11 @@ You are operating a centralized task management system that orchestrates Claude 
 
 | User Input | Pattern | Workflow |
 |------------|---------|----------|
-| Create task for `<repo>`: `<title>`. `<desc>` | Enter plan mode | [→](docs/workflows/create-task.md) |
+| Create task for `<repo>`: `<title>`. `<desc>` | Generate spec from template | [→](docs/workflows/create-task.md) |
 | Assign task `<id>` | Create worktree + spawn agent | [→](docs/workflows/assign-task.md) |
 | Assign tasks `<id1>`, `<id2>`, `<id3>` | Parallel assignment | [→](docs/workflows/assign-task.md) |
 | Refine task `<id>`: `<desc>` | Spawn refinement agent | [→](docs/workflows/refine-task.md) |
-| Approve task `<id>` | Complete + queue for merge | [→](docs/workflows/approve-task.md) |
+| Approve task `<id>` | Merge PR and mark completed | [→](docs/workflows/approve-task.md) |
 | Process merge queue | Merge next waiting task | [→](docs/workflows/merge-queue.md) |
 | Chat with `<student>` | Direct persona conversation | [→](docs/workflows/chat-with-student.md) |
 | Preview task `<id>` | Run app in worktree for testing | [→](docs/workflows/preview-app.md) |

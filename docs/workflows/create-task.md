@@ -7,91 +7,94 @@
 
 ## Workflow Steps
 
-### 1. Enter Plan Mode
-- Use the `EnterPlanMode` tool to start a planning session
-- This allows you to have a conversation with the user to clarify requirements
+### 1. Get Next Task ID
+- Read `data/tasks.json` to get the next available task ID
+- Create directory `tasks/{id}/`
 
-### 2. Planning Phase (in plan mode)
-- Explore the target repository to understand existing patterns
-- Ask clarifying questions about:
-  - Exact requirements and edge cases
-  - UI/UX preferences
-  - Technology choices (if applicable)
-  - Integration points with existing code
-  - Testing expectations
-- Use `Read`, `Glob`, `Grep` tools to understand the codebase
-- Draft the implementation plan collaboratively with user
+### 2. Resolve Repository Path
+- Read `data/repos.json` to find repository by name
+- If not found:
+  - Check if `/Users/josephtey/Projects/{repo-name}` exists
+  - If yes, add it to data/repos.json automatically
+  - If no, ask user: "What is the full path to the {repo} repository?"
+  - Store in data/repos.json for future use
 
 ### 3. Create Spec File
-- The plan mode document becomes the spec file
-- Create directory `tasks/{id}/` (get next_id from data/tasks.json first)
-- Write the plan to `tasks/{id}/spec.md`
-- Include:
-  - Task title and ID
-  - Repository information
-  - Detailed requirements from planning conversation
-  - Implementation approach agreed upon with user
-  - Files to modify/create
-  - Success criteria
-- Use `ExitPlanMode` when the spec is complete
+- Write spec to `tasks/{id}/spec.md` using the template below
+- Fill in all placeholders with:
+  - Task ID and title from user input
+  - Repository name and path
+  - Description from user input (can be multi-paragraph)
+  - Current timestamp
 
 ### 4. Register Task
-- Read `data/tasks.json` to get the next task ID
-- Resolve repository path from `data/repos.json` (ask user if unknown)
 - Update `data/tasks.json`:
   - Add new task object with status "todo"
+  - Set all required fields (see file-schemas.md)
   - Increment `next_id`
-  - Set `created_at` timestamp
-  - Reference the spec file created in plan mode
-- Confirm task creation with ID and spec file path
+- Confirm task creation: "Task {id} created: {title}. Spec at tasks/{id}/spec.md. Use 'Assign task {id}' when ready."
 
 ## Validation Rules
 - Repository name must be provided
 - Title must be non-empty
-- Spec file must be created through plan mode first
 - Repository path must exist (or be confirmed by user)
 
-## Spec File Format
+## Spec File Template
 
 ```markdown
 # Task #{id}: {title}
 
 **Repository:** {repo}
+**Repository Path:** {repo_path}
 **Status:** TODO
 **Created:** {timestamp}
 
-## Requirements
+---
 
-{detailed requirements from planning conversation}
+## Description
 
-## Implementation Approach
+{description from user input - preserve formatting, can be multiple paragraphs}
 
-{approach agreed upon with user, including:}
+---
 
-- Files to modify: path/to/file1.ts, path/to/file2.tsx
-- New files to create: path/to/newfile.ts
-- Key implementation steps
-- Technology/library choices
+## Notes
 
-## Implementation Details
+{Leave empty - student agents will add implementation notes here during execution}
+```
 
-{specific details discovered during codebase exploration:}
+## Example
 
-- Existing patterns to follow
-- Components/functions to integrate with
-- Styling approach (CSS modules, Tailwind, etc.)
-- State management approach
+```markdown
+# Task #15: Add dark mode toggle to settings page
 
-## Success Criteria
+**Repository:** joetey.com
+**Repository Path:** /Users/josephtey/Projects/joetey.com
+**Status:** TODO
+**Created:** 2026-02-15T10:30:00Z
 
-- Feature works as described
-- No breaking changes to existing functionality
-- Code follows repository conventions
-- All tests pass (if applicable)
-- {any additional criteria from planning}
+---
+
+## Description
+
+Add a dark mode toggle switch to the settings page. The toggle should:
+- Be located in the appearance section
+- Save preference to localStorage
+- Apply dark mode styles globally using CSS variables
+- Include smooth transition between modes
+
+The dark mode palette should use:
+- Background: #1a1a1a
+- Text: #e5e5e5
+- Accent: #3b82f6
+
+---
+
+## Notes
+
+{Empty - will be filled during implementation}
 ```
 
 ## Important Notes
-- **ALWAYS use plan mode** for task creation - never generate specs without user input
-- The planning conversation ensures specs are clear and actionable
-- User approves the plan before the task is registered
+- **Simple and direct** - Just create the spec from user input, no plan mode
+- The student agent will explore the codebase during implementation
+- Keep specs minimal - detailed planning happens during assignment, not creation

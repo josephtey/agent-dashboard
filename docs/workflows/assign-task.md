@@ -56,18 +56,57 @@
 Since agent runs in foreground, it blocks until complete.
 
 **On Success:**
-- Update task status to "staging"
-- Set `staging_at` timestamp
+- Update student context with decisions and learnings from agent log
 - Keep worktree active (do NOT cleanup)
 - Keep data/worktrees.json entry status as "active"
-- Update student context with decisions and learnings from agent log
-- **Create Pull Request:**
+
+- **Run Automated Tests (BEFORE creating PR):**
+  - Check if repo has tests that can be run
+  - If frontend/web app:
+    1. Start the dev server (use preview-app workflow pattern)
+    2. Create small Playwright test suite to verify the feature works
+    3. Run tests and capture results (pass/fail, screenshots, console logs)
+    4. Stop the dev server
+  - If backend/CLI:
+    1. Run existing test suite if available (`npm test`, `pytest`, etc.)
+    2. Or create simple integration test
+  - Capture test results for PR description
+
+- **Update Task Status:**
+  - Set status to "staging"
+  - Set `staging_at` timestamp
+  - Update `data/tasks.json`
+
+- **Create Pull Request with Test Results:**
   - Push branch to remote: `git push -u origin feature/task-{id}`
-  - Generate PR description from spec and commits
-  - Create PR: `gh pr create --title "{task_title}" --body "{generated_description}"`
+  - Generate PR description from spec, commits, AND test results
+  - Create PR with format:
+    ```bash
+    gh pr create --title "{task_title}" --body "$(cat <<'EOF'
+## Summary
+{summary from spec}
+
+## Implementation
+{commits summary}
+
+## Automated Tests
+{test results - pass/fail, what was tested, screenshots if applicable}
+
+✅ All tests passing
+_or_
+⚠️ {X} tests passing, {Y} tests failing - see details below
+
+## Test Plan
+{from spec testing section or generated}
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+    ```
   - Store PR URL in task data: `tasks/{id}/pr_url.txt`
   - Update `data/tasks.json` with `pr_url` field
-- Notify user: "Task {id} moved to staging. PR created at {pr_url}. You can now test and request refinements using 'Refine task {id}: <description>'. When satisfied, use 'Approve task {id}' to complete."
+
+- Notify user: "Task {id} moved to staging. Tests run: {test_summary}. PR created at {pr_url}. Review and use 'Refine task {id}: <description>' if changes needed, or 'Approve task {id}' to merge."
 
 **On Failure:**
 - Update task status to "failed"

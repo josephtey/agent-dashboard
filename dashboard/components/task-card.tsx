@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { format, formatDistanceToNow } from 'date-fns'
-import { Loader2, Copy, Check } from 'lucide-react'
+import { Loader2, Copy, Check, ExternalLink } from 'lucide-react'
 
 interface TaskCardProps {
   task: Task
@@ -131,6 +131,20 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
                 </TooltipContent>
               </Tooltip>
             </div>
+          )}
+
+          {/* PR Link for staging */}
+          {task.status === 'staging' && task.pr_url && (
+            <a
+              href={task.pr_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-[11px] text-blue-600 dark:text-blue-400 hover:underline flex-shrink-0"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ExternalLink className="h-3 w-3" />
+              <span>View Pull Request</span>
+            </a>
           )}
 
           {/* Error */}
