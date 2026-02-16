@@ -2,7 +2,7 @@
   "config": {
     "max_parallel_tasks": 3
   },
-  "next_id": 22,
+  "next_id": 23,
   "tasks": [
     {
       "id": 1,
@@ -388,6 +388,23 @@
       "merge_status": null,
       "created_at": "2026-02-15T12:00:00Z",
       "assigned_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    {
+      "id": 22,
+      "repo": "beyond-agents",
+      "repo_path": "/Users/josephtey/Projects/beyond-agents",
+      "spec_file": "tasks/22/spec.md",
+      "log_file": "tasks/22/agent.log",
+      "title": "Add Clear Context Button",
+      "status": "staging",
+      "branch": "feature/task-22",
+      "agent_id": null,
+      "worktree_path": "/Users/josephtey/Projects/beyond-agents-task-22",
+      "merge_status": null,
+      "created_at": "2026-02-15T08:00:00Z",
+      "assigned_at": "2026-02-15T08:00:00Z",
       "completed_at": null,
       "error": null
     }
