@@ -1,12 +1,36 @@
 # Preview App Workflow
 
 ## User Input Patterns
-- "Preview task `<id>`"
-- "Run task `<id>` app"
-- "Start task `<id>` server"
-- "Show me task `<id>`"
+- "Preview app" / "Preview `<repo>`" — run from main branch for interactive use
+- "Preview task `<id>`" — run from a task's worktree
 
 ## Overview
+
+Starts a web application for the user to **interactively use in their browser**. This is NOT a screenshot — the dev server runs in the background so the user can play with the app.
+
+### Preview App (from main)
+
+When the user says "preview app" or "preview `<repo>`":
+
+1. Resolve the repo path from `data/repos.json`
+2. `git pull origin main` to get latest
+3. Install dependencies if needed (`npm install`)
+4. Start the dev server **in the background** using `run_in_background: true`
+5. Tell the user the URL (e.g., http://localhost:3001) and let them know it's running
+6. Do NOT take a screenshot — the user wants to interact with it themselves
+
+**Default ports:** Use 3001 for frontend to avoid conflicts with other services.
+
+**Example:**
+```
+User: Preview app
+→ Start dev server at http://localhost:3001 in background
+→ "Dev server running at http://localhost:3001 — go play with it!"
+```
+
+### Preview Task (from worktree)
+
+When the user says "preview task `<id>`":
 
 Starts the beyond-agents web application in a task's worktree for testing and preview. This kills any existing instances, sets up the environment, and launches both backend and frontend servers on dedicated ports.
 

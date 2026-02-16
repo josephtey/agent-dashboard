@@ -125,6 +125,15 @@
       "branch": "feature/task-5",
       "created_at": "2026-02-15T06:03:36Z",
       "status": "removed"
+    },
+    {
+      "task_id": 20,
+      "repo": "beyond-agents",
+      "repo_path": "/Users/josephtey/Projects/beyond-agents",
+      "worktree_path": "/Users/josephtey/Projects/beyond-agents-task-20",
+      "branch": "feature/task-20",
+      "created_at": "2026-02-15T07:00:00Z",
+      "status": "removed"
     }
   ]
 }

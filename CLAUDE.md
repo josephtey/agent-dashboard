@@ -56,6 +56,7 @@ You are operating a centralized task management system that orchestrates Claude 
 | Approve task `<id>` | Merge PR and mark completed | [→](docs/workflows/approve-task.md) |
 | Process merge queue | Merge next waiting task | [→](docs/workflows/merge-queue.md) |
 | Chat with `<student>` | Direct persona conversation | [→](docs/workflows/chat-with-student.md) |
+| Preview app / Preview `<repo>` | Start dev server from main for interactive use | [→](docs/workflows/preview-app.md) |
 | Preview task `<id>` | Run app in worktree for testing | [→](docs/workflows/preview-app.md) |
 | Let it rip: `<repo>`: `<title>`. `<desc>` | Fast-track simple task | [→](docs/workflows/let-it-rip.md) |
 | List tasks | Display all tasks | (inline) |

@@ -86,15 +86,16 @@ Fast-track mode for simple, straightforward tasks that don't require planning or
 
 ### 6. Run Automated Tests
 **After agent completes implementation:**
-- If frontend/web app:
-  1. Start dev server
-  2. Create small Playwright test suite
-  3. Run tests and capture results
-  4. Stop dev server
-- If backend/CLI:
-  1. Run existing test suite if available
-  2. Or create simple integration test
-- Capture test results
+
+1. **Check for repo eval suite** (`tests/eval.spec.ts` or `tests/test_eval.py`)
+2. **Add test for current feature** to suite (or create suite if first task)
+3. **Run full eval suite** - all accumulated tests
+4. **Capture results** - pass/fail counts, screenshots, errors
+
+**Fast-track philosophy:**
+- Smoke test + minimal feature test (5 minutes max to write)
+- Don't aim for perfection - aim for "catches obvious breakage"
+- Add to cumulative suite for future regression catching
 
 ### 7. Auto-Progression Based on Test Results
 

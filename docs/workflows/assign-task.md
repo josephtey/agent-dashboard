@@ -61,16 +61,32 @@ Since agent runs in foreground, it blocks until complete.
 - Keep data/worktrees.json entry status as "active"
 
 - **Run Automated Tests (BEFORE creating PR):**
-  - Check if repo has tests that can be run
-  - If frontend/web app:
-    1. Start the dev server (use preview-app workflow pattern)
-    2. Create small Playwright test suite to verify the feature works
-    3. Run tests and capture results (pass/fail, screenshots, console logs)
-    4. Stop the dev server
-  - If backend/CLI:
-    1. Run existing test suite if available (`npm test`, `pytest`, etc.)
-    2. Or create simple integration test
-  - Capture test results for PR description
+
+  **Step 1: Check for repository eval suite**
+  - Look for `tests/eval.spec.ts` (frontend) or `tests/test_eval.py` (backend)
+  - If exists: This is the cumulative test suite
+  - If not: Create it now (this becomes the foundation)
+
+  **Step 2: Add test for current feature**
+  - Add Tier 1 (smoke test) if first task in repo
+  - Add Tier 2 (feature test) for current implementation
+  - Keep tests focused - 5-10 minutes to write max
+  - Tests should be fast to run (under 2 minutes total)
+
+  **Step 3: Run full eval suite**
+  - Frontend: `npx playwright test tests/eval.spec.ts`
+  - Backend: `pytest tests/test_eval.py` or `npm test`
+  - Capture results: pass/fail counts, screenshots, errors
+
+  **Step 4: Report results**
+  - Include in PR description
+  - Format: "✅ 5/5 tests passing" or "⚠️ 4/5 tests passing (1 known issue)"
+
+  **Example eval suite growth:**
+  - Task 1: Smoke test only (1 test)
+  - Task 2: Smoke + Feature A (2 tests)
+  - Task 3: Smoke + Feature A + Feature B (3 tests)
+  - Compounds over time, catches regressions
 
 - **Update Task Status:**
   - Set status to "staging"

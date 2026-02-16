@@ -1,12 +1,108 @@
 # Testing and Verification Guide
 
-## When to Use Playwright Testing
+## Philosophy: Pragmatic Testing
 
-**ALWAYS use Playwright to test and verify:**
-1. **Frontend implementations** - Any task that creates or modifies a web UI
-2. **Bug fixes** - When refining tasks to fix reported issues
-3. **User-facing features** - Chat interfaces, forms, interactive components
-4. **Before approval** - Test tasks in staging to verify they work as expected
+**Tests are a smoke alarm, not a comprehensive safety inspection.**
+
+Goals:
+- ✅ Catch obvious breakage before PR
+- ✅ Build cumulative test suite over time
+- ✅ Fast to write, fast to run
+- ❌ NOT aiming for 100% coverage
+- ❌ NOT testing every edge case
+
+## Repository Eval Suite Pattern
+
+**Every repo should have a growing eval suite that runs before every PR.**
+
+### Location
+- `tests/eval.spec.ts` (Playwright for frontend)
+- `tests/test_eval.py` (pytest for backend)
+- Or repo-specific test framework
+
+### Lifecycle
+1. **First task in repo:** Create eval suite with smoke test + feature test
+2. **Every subsequent task:** Run existing suite + add new test for current feature
+3. **Before PR:** Always run full suite, report results
+
+### Benefits
+- Suite grows with each task (compounds over time)
+- Regressions caught early
+- New features verified against existing functionality
+- Clear history of what works
+
+## When to Use Testing
+
+**ALWAYS test before creating PR:**
+- Run repository eval suite (if exists)
+- Add test for current feature to suite
+- Create eval suite if first task in repo
+
+## Tiered Testing Approach
+
+### Tier 1: Smoke Test (ALWAYS)
+**Time: 2-3 minutes**
+
+Basic sanity check that app works:
+```javascript
+// Start app, load page, check for errors
+await page.goto('http://localhost:3000');
+await page.waitForLoadState('networkidle');
+
+// Capture console errors
+const errors = [];
+page.on('console', msg => {
+  if (msg.type() === 'error') errors.push(msg.text());
+});
+
+// Screenshot for visual verification
+await page.screenshot({ path: 'screenshots/smoke-test.png' });
+
+// Basic assertion
+const hasMainUI = await page.locator('h1').count() > 0;
+console.log(hasMainUI ? '✅ Smoke test passed' : '❌ App broken');
+```
+
+**Catches:** Build failures, import errors, basic rendering issues
+
+### Tier 2: Feature Test (for non-trivial features)
+**Time: 5-10 minutes**
+
+Test the specific feature implemented:
+```javascript
+// Example: Testing search functionality
+await page.goto('http://localhost:3000');
+
+// Verify feature exists
+const searchButton = page.locator('button:has-text("Search")');
+await expect(searchButton).toBeVisible();
+
+// Test interaction
+await searchButton.click();
+await page.waitForTimeout(1000);
+
+// Verify expected behavior
+const results = page.locator('[data-testid="results"]');
+console.log(await results.count() > 0 ? '✅ Feature works' : '⚠️ Feature issue');
+```
+
+**Catches:** Feature missing, basic functionality broken
+
+### Tier 3: Integration Test (complex features only)
+**Time: 15-20 minutes**
+
+Only for multi-system features. Skip for most tasks.
+
+### Decision Matrix
+
+| Feature Type | Test Level | Example |
+|--------------|------------|---------|
+| Simple UI change | Smoke only | "Change button color" |
+| New component | Smoke + Feature | "Add loading spinner" |
+| User interaction | Smoke + Feature | "Add search" |
+| Multi-step flow | Smoke + Feature + Integration | "Authentication flow" |
+| Backend change | Run existing suite | "Update API" |
+| Bug fix | Smoke + Reproduce | "Fix crash on click" |
 
 ## Playwright Testing Workflow
 

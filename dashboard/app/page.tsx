@@ -214,7 +214,7 @@ export default function Dashboard() {
                           <span className="text-xs text-muted-foreground">→ Ready for review</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Implementation complete. PR automatically created. Time to review code and test.
+                          Implementation complete. Automated tests passed. PR created with test results. Time to review code.
                         </p>
                         <p className="text-xs font-mono text-muted-foreground mt-1">
                           Commands:
@@ -252,9 +252,24 @@ export default function Dashboard() {
                     </div>
 
                     <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                      <h3 className="text-sm font-semibold text-foreground mb-2">Testing Philosophy</h3>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Before creating PRs, automated tests verify features work. Each repo builds a cumulative eval suite:
+                      </p>
+                      <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside ml-2">
+                        <li><span className="font-medium">First task:</span> Create eval suite with smoke test</li>
+                        <li><span className="font-medium">Each task:</span> Add feature test to suite, run all tests</li>
+                        <li><span className="font-medium">Result:</span> Suite grows over time, catches regressions</li>
+                      </ul>
+                      <p className="text-xs text-muted-foreground mt-2 italic">
+                        Tests are pragmatic smoke alarms, not comprehensive QA. Fast to write, fast to run.
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
                       <h3 className="text-sm font-semibold text-foreground mb-2">Key Points</h3>
                       <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                        <li>PRs are automatically created when tasks reach staging</li>
+                        <li>PRs are automatically created with test results included</li>
                         <li>Approving a task merges it immediately (no separate merge step)</li>
                         <li>You can refine tasks multiple times before approving</li>
                         <li>Each refinement adds a commit and updates the PR</li>
