@@ -142,9 +142,10 @@ export default function Dashboard() {
                 <DialogTitle>About Clide</DialogTitle>
               </DialogHeader>
               <Tabs defaultValue="philosophy" className="mt-4">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="philosophy">Philosophy</TabsTrigger>
                   <TabsTrigger value="structure">How It Works</TabsTrigger>
+                  <TabsTrigger value="skills">Skills</TabsTrigger>
                   <TabsTrigger value="vision">Future Vision</TabsTrigger>
                 </TabsList>
                 <TabsContent value="philosophy" className="space-y-4 text-left mt-4">
@@ -275,6 +276,82 @@ export default function Dashboard() {
                         <li>Each refinement adds a commit and updates the PR</li>
                         <li>Worktrees stay active during staging for refinements</li>
                       </ul>
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="skills" className="space-y-4 text-left mt-4">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-2">Skills for Agent-First Engineering</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        This isn't traditional software engineering. The skillset has shifted—here's what matters now:
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="border-l-2 border-blue-500 dark:border-blue-400 pl-4">
+                        <h4 className="text-sm font-medium text-foreground mb-1">1. Reading Code (Not Writing)</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          The critical skill is knowing <strong>how much to read</strong> to understand sufficient detail for effectiveness and robustness.
+                        </p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside ml-2">
+                          <li>Scan file structure first—understand the architecture</li>
+                          <li>Read interfaces, types, and function signatures</li>
+                          <li>Skim implementations, dive deep only when needed</li>
+                          <li>Know when you have enough context vs. when to dig deeper</li>
+                          <li>Agents write code; you verify it makes sense</li>
+                        </ul>
+                      </div>
+
+                      <div className="border-l-2 border-purple-500 dark:border-purple-400 pl-4">
+                        <h4 className="text-sm font-medium text-foreground mb-1">2. Planning & Spec Writing</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Detailed specs are <strong>extremely important</strong>. The better your spec, the better the implementation.
+                        </p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside ml-2">
+                          <li>Be specific about requirements and edge cases</li>
+                          <li>Include examples of desired behavior</li>
+                          <li>Call out integration points and dependencies</li>
+                          <li>Don't assume—spell it out clearly</li>
+                          <li>Good specs = good code. Vague specs = rework.</li>
+                        </ul>
+                      </div>
+
+                      <div className="border-l-2 border-green-500 dark:border-green-400 pl-4">
+                        <h4 className="text-sm font-medium text-foreground mb-1">3. Testing & Cumulative Suites</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Testing is <strong>very important</strong>. Build eval suites that grow with each feature.
+                        </p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside ml-2">
+                          <li>Add test for each new feature to repo eval suite</li>
+                          <li>Run full suite before every PR—catch regressions</li>
+                          <li>Keep tests pragmatic: smoke alarms, not comprehensive QA</li>
+                          <li>Tests compound over time, suite documents what works</li>
+                          <li>Good tests = confidence to ship fast</li>
+                        </ul>
+                      </div>
+
+                      <div className="border-l-2 border-orange-500 dark:border-orange-400 pl-4">
+                        <h4 className="text-sm font-medium text-foreground mb-1">4. Parallel Working & Context Switching</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Managing <strong>cognitive strain</strong> from multiple parallel tasks is a new challenge.
+                        </p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside ml-2">
+                          <li>3 agents running? Track mental state for each context</li>
+                          <li>Use logs, PRs, and specs to quickly re-load context</li>
+                          <li>Don't overload—respect your cognitive bandwidth</li>
+                          <li>Worktrees isolate code; you must isolate mental models</li>
+                          <li>Quality review requires focus—don't rush it</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                      <p className="text-sm text-muted-foreground italic">
+                        <strong>The shift:</strong> You're not coding anymore—you're orchestrating, reviewing, and learning.
+                        These skills compound. The better you get at reading code, writing specs, building tests, and managing
+                        parallel work, the faster you ship and the more you learn.
+                      </p>
                     </div>
                   </div>
                 </TabsContent>
